@@ -1,0 +1,22 @@
+Sprint 1 artifacts (November 8)
+
+Creation of Grid (3 story points):
+Create an 8x8 grid to store initial and current state of a game. If generated initial state is randomized, prevent pattern generation so the player does not receive points for just starting the level.
+
+User input (2 story points):
+Detect mouse movements and actions on the UI to facilitate control of tile swapping and menu clicking.
+
+Swapping Tiles (2 story points):
+Convey action from a user input to the internal grid.
+
+Detecting Matches (5 story points):
+After player action or any other tile movement, check if any patterns are present on the board and call corresponding functions if patterns are detected.
+
+Tile Clearing Mechanic (3 story points):
+After a pattern has been found, remove tiles from grid and call to update player score.
+
+Tile Drop Mechanic (3 story points):
+Update board after tiles have been cleared, existing tiles should move downward and new tiles should drop in to the grid, check for matches again.
+
+Create Tile Art Assets (8 story points):
+Design and make art for game tiles on the 8x8 grid.
