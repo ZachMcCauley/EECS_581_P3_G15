@@ -28,6 +28,25 @@ public class GridTile : MonoBehaviour
 
         return GridManager.Instance.TileDictionary.ContainsKey(location + Vector2Int.up);
     }
+    public bool IsPartOfMatch()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public bool IsPartOfSpecialMatch()
+    {
+        throw new System.NotImplementedException();
+    }
+    public void Clear()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void CreatePowerupHere()
+    {
+        throw new System.NotImplementedException();
+    }
+    
     public Vector2Int location;
 
 }
