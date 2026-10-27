@@ -24,11 +24,11 @@ public class GridManager : MonoBehaviour
 
     private void SetupTilemap()
     {
-        _tileDictionary = new Dictionary<Vector2Int, GameObject>();
+        _tileDictionary = new Dictionary<Vector2Int, GridTile>();
         // Trim bounds of grid. This keeps bounds as small as possible to avoid creating unnessecary tiles.
-        grid.CompressBounds();
+        _grid.CompressBounds();
         // Create tiles objects for each grid space.
-        BoundsInt bounds = grid.cellBounds;
+        BoundsInt bounds = _grid.cellBounds;
         /*
          * Iterate through all tile x/y positions
          * Theoretically, we can iterate through the Z-positions if necessary, but I see no
@@ -38,25 +38,31 @@ public class GridManager : MonoBehaviour
         {
             for (int y = bounds.min.y; y < bounds.max.y; y++)
             {
-                Vector3Int cellPosition = new Vector3Int(x, y, 0);
+                Vector2Int cellPosition = new Vector2Int(x, y);
                 
-                GameObject O = Instantiate(tilePrefab, tileObjectContainer.transform);
-                O.transform.position = cellPosition;
+                GameObject O = Instantiate(_tilePrefab, _tileObjectContainer.transform);
+                O.transform.position = (Vector3Int)cellPosition + _grid.gameObject.transform.position;
                 GridTile tileScript = O.GetComponent<GridTile>();
                 tileScript.location = cellPosition;
+                
+                _tileDictionary.Add(new Vector2Int(x, y), tileScript);
             }
         }
+        
     }
 
     public static GridManager Instance => _instance;
     private static GridManager _instance;
 
-    public Tilemap grid;
-    public GameObject tileObjectContainer;
-    public GameObject tilePrefab;
+    [SerializeField]
+    private Tilemap _grid;
+    [SerializeField]
+    private GameObject _tileObjectContainer;
+    [SerializeField]
+    private GameObject _tilePrefab;
 
-    public Dictionary<Vector2Int, GameObject> TileDictionary => _tileDictionary;
-    private Dictionary<Vector2Int, GameObject> _tileDictionary;
+    public Dictionary<Vector2Int, GridTile> TileDictionary => _tileDictionary;
+    private Dictionary<Vector2Int, GridTile> _tileDictionary;
 
 }
 
