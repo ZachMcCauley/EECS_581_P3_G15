@@ -53,7 +53,7 @@ namespace Input
 
         public bool GetAction(string actionName, ref InputAction returnedValue)
         {
-            if (!_actions.ContainsKey(actionName))
+            if (_actions.ContainsKey(actionName))
             {
                 returnedValue = _actions[actionName];
             }

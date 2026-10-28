@@ -51,6 +51,15 @@ public class GridManager : MonoBehaviour
         
     }
 
+    public bool IsGridUnstable()
+    {
+        foreach (GridTile tile in _tileDictionary.Values)
+        {
+            if (tile.DoingAnimation || !tile.HasItemValue()) return true;
+        }
+        return false;
+    }
+
     public static GridManager Instance => _instance;
     private static GridManager _instance;
 

@@ -1108,7 +1108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 041b1eafcca7fd14f80cdf632b34991a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.GameManager
-  FallTime: 2
+  FallTime: 0.33
   _itemPrefab: {fileID: 7987975573872601529, guid: 092daf00c41d6c57cb30cdc884974378, type: 3}
 --- !u!1 &742333073
 GameObject:

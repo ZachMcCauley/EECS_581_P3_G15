@@ -59,10 +59,14 @@ public class GridTile : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
+    public bool HasItemValue()
+    {
+        return _currentItem != null;
+    }
     public bool GetItemValue(ref Item returnLoc)
     {
         // If doing falling animation, item is unavailable
-        if (_doingFallingAnimation) return false;
+        if (_doingAnimation) return false;
         // Otherwise, we can just get the item
         bool toReturn = _currentItem != null;
         returnLoc = _currentItem;
@@ -81,8 +85,7 @@ public class GridTile : MonoBehaviour
         {
             Item I = null;
             if (!t.GetItemValue(ref I)) return;
-            _currentItem = I;
-            I.transform.SetParent(transform);
+            SetCurrentItem(I);
             StartCoroutine(FallDown());
         }
         else
@@ -95,12 +98,12 @@ public class GridTile : MonoBehaviour
     {
         GameObject o = GameManager.Instance.GenerateTileItem(transform);
         _currentItem = o.GetComponent<Item>();
-        _doingFallingAnimation = false;
+        _doingAnimation = false;
     }
 
     private IEnumerator FallDown()
     {
-        _doingFallingAnimation = true;
+        _doingAnimation = true;
         Vector3 currentPosition = _currentItem.transform.localPosition;
         Vector3 targetPosition = Vector3.back;
         for (float f = 0; f < GameManager.Instance.FallTime; f += Time.deltaTime)
@@ -112,15 +115,30 @@ public class GridTile : MonoBehaviour
             yield return null;
         }
         _currentItem.transform.localPosition = targetPosition;
-        _doingFallingAnimation = false;
+        _doingAnimation = false;
         yield break;
     }
-    
+
+    public void SwapWith(GridTile other)
+    {
+        // Swap the items
+        Item temp = _currentItem;
+        SetCurrentItem(other._currentItem);
+        other.SetCurrentItem(temp);
+        StartCoroutine(FallDown());
+        other.StartCoroutine(other.FallDown());
+    }
+
+    private void SetCurrentItem(Item item)
+    {
+        _currentItem = item;
+        item.transform.SetParent(transform);
+    }
     
     public Vector2Int location;
     private Item _currentItem;
-    public bool DoingFallingAnimation => _doingFallingAnimation;
-    private bool _doingFallingAnimation;
+    public bool DoingAnimation => _doingAnimation;
+    private bool _doingAnimation;
 
 }
 
