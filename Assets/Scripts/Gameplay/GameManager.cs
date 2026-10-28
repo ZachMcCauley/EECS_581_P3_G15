@@ -51,7 +51,7 @@ namespace Gameplay
             return GenerateTileItem(GridManager.Instance.TileDictionary[position].transform);
         }
 
-        [Range(0.5f, 2)]
+        [Range(0.1f, 0.4f)]
         public float FallTime;
         public static GameManager Instance => _instance;
         private static GameManager _instance;

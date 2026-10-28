@@ -6,12 +6,12 @@ namespace Gameplay
 {
 public class GridTile : MonoBehaviour
 {
-    public void Awake()
+    private void Awake()
     {
         _currentItem = null;
     }
 
-    public void Update()
+    private void Update()
     {
         GetItemIfIShould();
     }
@@ -59,9 +59,13 @@ public class GridTile : MonoBehaviour
         throw new System.NotImplementedException();
     }
 
-    public Item GetItemValue()
+    public bool GetItemValue(ref Item returnLoc)
     {
-        Item toReturn = _currentItem;
+        // If doing falling animation, item is unavailable
+        if (_doingFallingAnimation) return false;
+        // Otherwise, we can just get the item
+        bool toReturn = _currentItem != null;
+        returnLoc = _currentItem;
         _currentItem = null;
         return toReturn;
     }
@@ -75,18 +79,23 @@ public class GridTile : MonoBehaviour
         GridTile t = null;
         if (GetTileAbove(ref t))
         {
-            Item I = t.GetItemValue();
-            if (I == null) return;
+            Item I = null;
+            if (!t.GetItemValue(ref I)) return;
             _currentItem = I;
             I.transform.SetParent(transform);
             StartCoroutine(FallDown());
         }
         else
         {
-            GameObject o = GameManager.Instance.GenerateTileItem(transform);
-            _currentItem = o.GetComponent<Item>();
-            _doingFallingAnimation = false;
+            GenerateItem();
         }
+    }
+
+    private void GenerateItem()
+    {
+        GameObject o = GameManager.Instance.GenerateTileItem(transform);
+        _currentItem = o.GetComponent<Item>();
+        _doingFallingAnimation = false;
     }
 
     private IEnumerator FallDown()
@@ -110,6 +119,7 @@ public class GridTile : MonoBehaviour
     
     public Vector2Int location;
     private Item _currentItem;
+    public bool DoingFallingAnimation => _doingFallingAnimation;
     private bool _doingFallingAnimation;
 
 }
