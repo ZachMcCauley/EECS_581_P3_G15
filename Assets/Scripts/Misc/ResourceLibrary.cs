@@ -11,7 +11,8 @@ public class ResourceLibrary : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
-        
+
+        _instance = this;
         DontDestroyOnLoad(gameObject);
         LoadAssets();
     }
@@ -22,12 +23,23 @@ public class ResourceLibrary : MonoBehaviour
     }
     private void GetTileTextures()
     {
-        _tileTextures = Resources.LoadAll<Texture2D>(_tileTexturePath);
+        _tileTextures = new Dictionary<string, Sprite>();
+        Sprite[] textures = Resources.LoadAll<Sprite>(_tileTexturePath);
+        foreach (Sprite texture in textures)
+        {
+            Debug.Log("Loaded " +  texture.name);
+            _tileTextures[texture.name.ToUpper()] = texture;
+        }
     }
 
-    public Texture2D GetTexture(int index)
+    public Sprite GetTexture(string key)
     {
-        return  _tileTextures[index];
+        return  _tileTextures[key];
+    }
+
+    public string[] AllTileKeys()
+    {
+        return  _tileTextures.Keys.ToArray();
     }
 
     public static ResourceLibrary Instance => _instance;
@@ -35,5 +47,5 @@ public class ResourceLibrary : MonoBehaviour
     
     [SerializeField]
     private string _tileTexturePath;
-    private Texture2D[] _tileTextures;
+    private Dictionary<string, Sprite> _tileTextures;
 }

@@ -1108,6 +1108,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 041b1eafcca7fd14f80cdf632b34991a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gameplay.GameManager
+  FallTime: 2
+  _itemPrefab: {fileID: 7987975573872601529, guid: 092daf00c41d6c57cb30cdc884974378, type: 3}
 --- !u!1 &742333073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,7 +1154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2579bd680cc44186893f22b8ace497a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceLibrary
-  _tileTexturePath: Textures/TileTextures
+  _tileTexturePath: TileArt
 --- !u!1 &891102942
 GameObject:
   m_ObjectHideFlags: 0
