@@ -60,6 +60,18 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+    public bool BoardContainsMatch(ref List<GridTile> matchingTiles)
+    {
+        matchingTiles = new List<GridTile>();
+        List<GridTile> matchTiles = new List<GridTile>();
+        foreach (GridTile tile in _tileDictionary.Values)
+        {
+            tile.IsPartOfMatch(ref matchTiles);
+            matchingTiles.AddRange(matchTiles);
+        }
+        return matchingTiles.Count > 0;
+    }
+
     public static GridManager Instance => _instance;
     private static GridManager _instance;
 

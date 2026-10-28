@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gameplay
@@ -40,9 +41,67 @@ public class GridTile : MonoBehaviour
 
         return GridManager.Instance.TileDictionary.ContainsKey(location + Vector2Int.up);
     }
-    public bool IsPartOfMatch()
+    public bool IsPartOfMatch(ref List<GridTile> match)
     {
-        throw new System.NotImplementedException();
+        // Detect horizontal matches
+        match = new List<GridTile>();
+        match.Add(this);
+        // Go left
+        for (int x = location.x - 1; true; x--)
+        {
+            Vector2Int pos =  new Vector2Int(x, location.y);
+            if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
+            GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem.ItemName != _currentItem.ItemName) break;
+            match.Add(t);
+        }
+        // Go right
+        for (int x = location.x + 1; true; x++)
+        {
+            Vector2Int pos =  new Vector2Int(x, location.y);
+            if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
+            GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem.ItemName != _currentItem.ItemName) break;
+            match.Add(t);
+        }
+        // Reset if no match formed.
+        if (match.Count < 3)
+        {
+            match.Clear();
+        }
+        // Detect vertical matches
+        List<GridTile> vMatch = new List<GridTile>();
+        vMatch.Add(this);
+        // Go down
+        for (int y = location.y - 1; true; y--)
+        {
+            Vector2Int pos =  new Vector2Int(location.x, y);
+            if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
+            GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem.ItemName != _currentItem.ItemName) break;
+            vMatch.Add(t);
+        }
+        // Go up
+        for (int y = location.y+ 1; true; y++)
+        {
+            Vector2Int pos =  new Vector2Int(location.x, y);
+            if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
+            GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem.ItemName != _currentItem.ItemName) break;
+            vMatch.Add(t);
+        }
+
+        // Reset if no match formed.
+        if (vMatch.Count < 3)
+        {
+            vMatch.Clear();
+        }
+        
+        // Join both lists
+        match.AddRange(vMatch);
+        
+        // If the list is not empty, a match was formed.
+        return match.Count != 0;
     }
 
     public bool IsPartOfSpecialMatch()
@@ -51,7 +110,8 @@ public class GridTile : MonoBehaviour
     }
     public void Clear()
     {
-        throw new System.NotImplementedException();
+        if(_currentItem != null) Destroy(_currentItem.gameObject);
+        _currentItem = null;
     }
 
     public void CreatePowerupHere()
@@ -86,7 +146,7 @@ public class GridTile : MonoBehaviour
             Item I = null;
             if (!t.GetItemValue(ref I)) return;
             SetCurrentItem(I);
-            StartCoroutine(FallDown());
+            StartCoroutine(MoveItemToCenter());
         }
         else
         {
@@ -101,7 +161,7 @@ public class GridTile : MonoBehaviour
         _doingAnimation = false;
     }
 
-    private IEnumerator FallDown()
+    private IEnumerator MoveItemToCenter()
     {
         _doingAnimation = true;
         Vector3 currentPosition = _currentItem.transform.localPosition;
@@ -119,20 +179,31 @@ public class GridTile : MonoBehaviour
         yield break;
     }
 
-    public void SwapWith(GridTile other)
+    public void SwapWith(GridTile other, bool shouldValidateAfter = true)
     {
-        // Swap the items
-        Item temp = _currentItem;
-        SetCurrentItem(other._currentItem);
-        other.SetCurrentItem(temp);
-        StartCoroutine(FallDown());
-        other.StartCoroutine(other.FallDown());
+        // Invoke a coroutine
+        StartCoroutine(HandleSwaps(other, shouldValidateAfter));
     }
 
     private void SetCurrentItem(Item item)
     {
         _currentItem = item;
         item.transform.SetParent(transform);
+    }
+
+    private IEnumerator HandleSwaps(GridTile other, bool shouldValidateAfter)
+    {
+        // Swap the items
+        Item temp = _currentItem;
+        SetCurrentItem(other._currentItem);
+        other.SetCurrentItem(temp);
+        StartCoroutine(MoveItemToCenter());
+        other.StartCoroutine(other.MoveItemToCenter());
+        // Wait for both coroutines to finish.
+        while (_doingAnimation || other._doingAnimation) yield return null;
+        // Now validate the swaps if we should
+        if (shouldValidateAfter) StartCoroutine(GameManager.Instance.ValidateRecentSwap());
+        yield break;
     }
     
     public Vector2Int location;

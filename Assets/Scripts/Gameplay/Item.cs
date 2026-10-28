@@ -22,6 +22,7 @@ public class Item : MonoBehaviour
         _itemName = itemName;
     }
 
+    public string ItemName => _itemName;
     private string _itemName;
     private ScriptableObject _powerupInfo;
 }

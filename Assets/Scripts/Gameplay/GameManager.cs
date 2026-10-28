@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -51,6 +52,49 @@ namespace Gameplay
             return GenerateTileItem(GridManager.Instance.TileDictionary[position].transform);
         }
 
+        public void SetMostRecentSwap(GridTile tile, GridTile other)
+        {
+            _mostRecentSwap = Tuple.Create(tile, other);
+        }
+
+        public IEnumerator ValidateRecentSwap()
+        {
+            // If this changes, then we should check for matches
+            List<GridTile> matchTiles = null;
+            bool didMatch = _mostRecentSwap.Item1.IsPartOfMatch(ref matchTiles);
+            foreach (GridTile t in matchTiles)
+            {
+                t.Clear();
+            }
+            // Also check for the other component
+            didMatch = didMatch || _mostRecentSwap.Item2.IsPartOfMatch(ref matchTiles);
+            foreach (GridTile t in matchTiles)
+            {
+                t.Clear();
+            }
+
+            if (didMatch)
+            {
+                List<GridTile> remainingMatches = new List<GridTile>();
+                while (GridManager.Instance.IsGridUnstable() || GridManager.Instance.BoardContainsMatch(ref remainingMatches))
+                {
+                    foreach (GridTile t in remainingMatches)
+                    {
+                        t.Clear();
+                    }
+                    remainingMatches.Clear();
+                    yield return null;
+                }
+            }
+            // If no match is created, we swap the tiles back.
+            else
+            {
+                _mostRecentSwap.Item1.SwapWith(_mostRecentSwap.Item2, false);
+            }
+
+            yield break;
+        }
+
         [Range(0.1f, 0.4f)]
         public float FallTime;
         public static GameManager Instance => _instance;
@@ -58,6 +102,7 @@ namespace Gameplay
         private List<string> _validTiles;
         [SerializeField]
         private GameObject _itemPrefab;
+        private Tuple<GridTile, GridTile> _mostRecentSwap;
     }
 
 }

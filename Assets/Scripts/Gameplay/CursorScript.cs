@@ -115,6 +115,8 @@ namespace Gameplay
             if (GridManager.Instance.IsGridUnstable()) return false;
             // Swap the items
             _hoverOver.SwapWith(_selectedTile);
+            // Note which tiles were swapped. If necessary, they may need to be swapped back.
+            GameManager.Instance.SetMostRecentSwap(_hoverOver, _selectedTile);
             // Reset selected tile
             _selectedTile = null;
             return true;
