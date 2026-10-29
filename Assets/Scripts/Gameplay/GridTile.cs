@@ -13,6 +13,10 @@ public class GridTile : MonoBehaviour
     {
         _currentItem = null;
     }
+    private void Start()
+    {
+        GenerateItem();
+    }
 
     private void Update()
     {
