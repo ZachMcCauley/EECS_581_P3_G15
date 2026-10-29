@@ -100,7 +100,7 @@ public class GridTile : MonoBehaviour
             if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
             GridTile t = GridManager.Instance.TileDictionary[pos];
             // Spawner tiles also cannot contribute to matches
-            if (IsSpawnerTile) break;
+            if (t.IsSpawnerTile) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             vMatch.Add(t);
         }
