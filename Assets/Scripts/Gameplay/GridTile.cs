@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Input;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Gameplay
 {
@@ -43,6 +45,12 @@ public class GridTile : MonoBehaviour
     }
     public bool IsPartOfMatch(ref List<GridTile> match)
     {
+        // Spawner tiles should never match
+        if (IsSpawnerTile)
+        {
+            match = new List<GridTile>();
+            return false;
+        }
         // Detect horizontal matches
         match = new List<GridTile>();
         match.Add(this);
@@ -82,11 +90,13 @@ public class GridTile : MonoBehaviour
             vMatch.Add(t);
         }
         // Go up
-        for (int y = location.y+ 1; true; y++)
+        for (int y = location.y + 1; true; y++)
         {
             Vector2Int pos =  new Vector2Int(location.x, y);
             if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
             GridTile t = GridManager.Instance.TileDictionary[pos];
+            // Spawner tiles also cannot contribute to matches
+            if (IsSpawnerTile) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             vMatch.Add(t);
         }
@@ -193,6 +203,13 @@ public class GridTile : MonoBehaviour
 
     private IEnumerator HandleSwaps(GridTile other, bool shouldValidateAfter)
     {
+        // We should disable player selection while swaps are occuring.
+        InputAction select = null;
+        if (!InputManager.Instance.GetAction("Gameplay.Select", ref select))
+        {
+            throw new Exception("Cannot find Select action to disable it!");
+        }
+        select.Disable();
         // Swap the items
         Item temp = _currentItem;
         SetCurrentItem(other._currentItem);
@@ -201,11 +218,16 @@ public class GridTile : MonoBehaviour
         other.StartCoroutine(other.MoveItemToCenter());
         // Wait for both coroutines to finish.
         while (_doingAnimation || other._doingAnimation) yield return null;
+        // Note which tiles were swapped. If necessary, they may need to be swapped back.
+        GameManager.Instance.SetMostRecentSwap(this, other);
         // Now validate the swaps if we should
-        if (shouldValidateAfter) StartCoroutine(GameManager.Instance.ValidateRecentSwap());
+        if (shouldValidateAfter) yield return GameManager.Instance.ValidateRecentSwap();
+        // We must now return the player's agency
+        select.Enable();
         yield break;
     }
-    
+
+    private bool IsSpawnerTile => !HasTileAbove();
     public Vector2Int location;
     private Item _currentItem;
     public bool DoingAnimation => _doingAnimation;

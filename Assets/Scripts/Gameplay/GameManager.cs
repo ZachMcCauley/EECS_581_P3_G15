@@ -60,24 +60,32 @@ namespace Gameplay
         public IEnumerator ValidateRecentSwap()
         {
             // If this changes, then we should check for matches
-            List<GridTile> matchTiles = null;
-            bool didMatch = _mostRecentSwap.Item1.IsPartOfMatch(ref matchTiles);
-            foreach (GridTile t in matchTiles)
+            List<GridTile> matchTilesFirst = null;
+            bool didMatchFirst = _mostRecentSwap.Item1.IsPartOfMatch(ref matchTilesFirst);
+            
+            // Also check for the other component
+            List<GridTile> matchTilesSecond = null;
+            bool didMatchSecond = _mostRecentSwap.Item2.IsPartOfMatch(ref matchTilesSecond);
+            
+            // We have to be careful about checking for matches before we clear any tiles. We do that now.
+            foreach (GridTile t in matchTilesFirst)
             {
                 t.Clear();
             }
-            // Also check for the other component
-            didMatch = didMatch || _mostRecentSwap.Item2.IsPartOfMatch(ref matchTiles);
-            foreach (GridTile t in matchTiles)
+            foreach (GridTile t in matchTilesSecond)
             {
                 t.Clear();
             }
 
-            if (didMatch)
+            if (didMatchFirst || didMatchSecond)
             {
                 List<GridTile> remainingMatches = new List<GridTile>();
                 while (GridManager.Instance.IsGridUnstable() || GridManager.Instance.BoardContainsMatch(ref remainingMatches))
                 {
+                    if (!GridManager.Instance.IsGridUnstable())
+                    {
+                        yield return new WaitForSeconds(0.75f);
+                    }
                     foreach (GridTile t in remainingMatches)
                     {
                         t.Clear();

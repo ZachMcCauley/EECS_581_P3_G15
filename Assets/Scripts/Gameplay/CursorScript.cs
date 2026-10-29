@@ -47,6 +47,9 @@ namespace Gameplay
                 }
             }
             
+            // Thou shalt not hover over spawner tiles
+            if (_hoverOver != null && !_hoverOver.HasTileAbove()) _hoverOver = null;
+            
             HideIfIShould();
 
             // If we are not hovering over a tile, we unselect any selected tile
@@ -115,8 +118,6 @@ namespace Gameplay
             if (GridManager.Instance.IsGridUnstable()) return false;
             // Swap the items
             _hoverOver.SwapWith(_selectedTile);
-            // Note which tiles were swapped. If necessary, they may need to be swapped back.
-            GameManager.Instance.SetMostRecentSwap(_hoverOver, _selectedTile);
             // Reset selected tile
             _selectedTile = null;
             return true;
