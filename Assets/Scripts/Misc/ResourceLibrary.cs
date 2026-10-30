@@ -13,7 +13,6 @@ public class ResourceLibrary : MonoBehaviour
         }
 
         _instance = this;
-        DontDestroyOnLoad(gameObject);
         LoadAssets();
     }
 

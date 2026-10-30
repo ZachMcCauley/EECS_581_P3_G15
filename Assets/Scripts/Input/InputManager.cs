@@ -16,7 +16,6 @@ namespace Input
             }
 
             _instance = this;
-            DontDestroyOnLoad(gameObject);
             SetupInputDictionary();
         }
 

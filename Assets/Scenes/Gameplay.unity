@@ -1121,6 +1121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 742333074}
   - component: {fileID: 742333075}
+  - component: {fileID: 742333076}
   m_Layer: 0
   m_Name: ResourceLibrary
   m_TagString: Untagged
@@ -1156,6 +1157,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceLibrary
   _tileTexturePath: TileArt
+--- !u!114 &742333076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742333073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641cb07b5071fd00c8b36803f862287b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
 --- !u!1 &891102942
 GameObject:
   m_ObjectHideFlags: 0
@@ -1316,6 +1329,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1233060873}
   - component: {fileID: 1233060874}
+  - component: {fileID: 1233060875}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -1351,6 +1365,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   _inputs: {fileID: -944628639613478452, guid: 7cd1a4c56d610e82faa29516f7f87fc6, type: 3}
+--- !u!114 &1233060875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233060872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641cb07b5071fd00c8b36803f862287b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DontDestroyOnLoad
 --- !u!1 &1769973657
 GameObject:
   m_ObjectHideFlags: 0
