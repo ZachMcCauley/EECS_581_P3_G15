@@ -52,6 +52,15 @@ namespace Gameplay
             return GenerateTileItem(GridManager.Instance.TileDictionary[position].transform);
         }
 
+        public GameObject GenerateTileItem(Transform trans, string avoid)
+        {
+            bool originallyInList = _validTiles.Contains(avoid);
+            if (originallyInList) _validTiles.Remove(avoid);
+            GameObject toReturn = GenerateTileItem(trans);
+            if (originallyInList) _validTiles.Add(avoid);
+            return toReturn;
+        }
+
         public void SetMostRecentSwap(GridTile tile, GridTile other)
         {
             _mostRecentSwap = Tuple.Create(tile, other);

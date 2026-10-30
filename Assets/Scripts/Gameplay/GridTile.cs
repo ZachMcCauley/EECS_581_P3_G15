@@ -16,6 +16,16 @@ public class GridTile : MonoBehaviour
     private void Start()
     {
         GenerateItem();
+        // If part of match, change tile to one that isn't in match
+        List<GridTile> match = new List<GridTile>();
+        while (IsPartOfMatch(ref match))
+        {
+            string name = _currentItem.ItemName;
+            Clear();
+            GameObject o = GameManager.Instance.GenerateTileItem(transform, name);
+            _currentItem = o.GetComponent<Item>();
+            _doingAnimation = false;
+        }
     }
 
     private void Update()
@@ -64,6 +74,7 @@ public class GridTile : MonoBehaviour
             Vector2Int pos =  new Vector2Int(x, location.y);
             if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
             GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem == null) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             match.Add(t);
         }
@@ -73,6 +84,7 @@ public class GridTile : MonoBehaviour
             Vector2Int pos =  new Vector2Int(x, location.y);
             if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
             GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem == null) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             match.Add(t);
         }
@@ -90,6 +102,7 @@ public class GridTile : MonoBehaviour
             Vector2Int pos =  new Vector2Int(location.x, y);
             if (!GridManager.Instance.TileDictionary.ContainsKey(pos)) break;
             GridTile t = GridManager.Instance.TileDictionary[pos];
+            if (t._currentItem == null) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             vMatch.Add(t);
         }
@@ -101,6 +114,7 @@ public class GridTile : MonoBehaviour
             GridTile t = GridManager.Instance.TileDictionary[pos];
             // Spawner tiles also cannot contribute to matches
             if (t.IsSpawnerTile) break;
+            if (t._currentItem == null) break;
             if (t._currentItem.ItemName != _currentItem.ItemName) break;
             vMatch.Add(t);
         }
