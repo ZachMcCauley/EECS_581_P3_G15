@@ -22,12 +22,12 @@ class Vector2:
         return f"Vector2({self.x}, {self.y})"
     def __hash__(self):
         return hash((self.x, self.y))
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
     def SqrMagnitude(self):
         return self.x ** 2 + self.y ** 2
     def Magnitude(self):
         return math.sqrt(self.SqrMagnitude())
-    def IsAdjacentTo(self, other):
-        return 1 == (self - other).SqrMagnitude()
     @staticmethod
     def Zero():
         return Vector2(0, 0)
