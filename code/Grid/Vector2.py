@@ -1,6 +1,8 @@
 # A rudimentary file replicating Vector2 in Unity
 # I use this instead of tuples because I can add functions to add and subtract
 import math
+from unittest import case
+
 
 class Vector2:
     def __init__(self, x, y):
@@ -24,10 +26,22 @@ class Vector2:
         return hash((self.x, self.y))
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
+    def __getitem__(self, index):
+        match index:
+            case 0:
+                return self.x
+            case 1:
+                return self.y
+            case _:
+                raise IndexError(f"Index {index} out of range!")
     def SqrMagnitude(self):
         return self.x ** 2 + self.y ** 2
     def Magnitude(self):
         return math.sqrt(self.SqrMagnitude())
+    def AsTuple(self):
+        return (self.x, self.y)
+    def AsList(self):
+        return [self.x, self.y]
     @staticmethod
     def Zero():
         return Vector2(0, 0)

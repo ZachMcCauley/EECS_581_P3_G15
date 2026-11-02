@@ -1,4 +1,5 @@
 from Vector2Int import Vector2Int
+from Vector2 import Vector2
 from GridTile import GridTile
 
 class Grid:
@@ -14,3 +15,33 @@ class Grid:
             for y in dims[1]:
                 pos.add(Vector2Int(x, y))
         return Grid(pos)
+    def Render(self):
+        raise NotImplementedError("Method to render Grid not implemented!")
+    def MinX(self):
+        toReturn = None
+        for key in self.grid.keys():
+            if toReturn is None or self.grid[key].x < toReturn:
+                toReturn = self.grid[key].x
+        return toReturn
+    def MaxX(self):
+        toReturn = None
+        for key in self.grid.keys():
+            if toReturn is None or self.grid[key].x > toReturn:
+                toReturn = self.grid[key].x
+        return toReturn
+    def MinY(self):
+        toReturn = None
+        for key in self.grid.keys():
+            if toReturn is None or self.grid[key].y < toReturn:
+                toReturn = self.grid[key].y
+        return toReturn
+    def MaxY(self):
+        toReturn = None
+        for key in self.grid.keys():
+            if toReturn is None or self.grid[key].y > toReturn:
+                toReturn = self.grid[key].y
+        return toReturn
+    def Center(self):
+        xCtr = (self.MinX() + self.MaxX()) / 2
+        yCtr = (self.MinY() + self.MaxY()) / 2
+        return Vector2(xCtr, yCtr)

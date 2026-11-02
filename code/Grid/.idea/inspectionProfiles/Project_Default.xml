@@ -1,0 +1,38 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="blinker" />
+          <option value="cryptography" />
+          <option value="dbus-python" />
+          <option value="distro" />
+          <option value="distro-info" />
+          <option value="httplib2" />
+          <option value="importlib-metadata" />
+          <option value="jeepney" />
+          <option value="keyring" />
+          <option value="launchpadlib" />
+          <option value="lazr.restfulclient" />
+          <option value="more-itertools" />
+          <option value="netifaces" />
+          <option value="oauthlib" />
+          <option value="PyGObject" />
+          <option value="PyJWT" />
+          <option value="pyparsing" />
+          <option value="python-apt" />
+          <option value="PyYAML" />
+          <option value="qi" />
+          <option value="SecretStorage" />
+          <option value="six" />
+          <option value="systemd-python" />
+          <option value="ubuntu-advantage-tools" />
+          <option value="ufw" />
+          <option value="wadllib" />
+          <option value="zipp" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
