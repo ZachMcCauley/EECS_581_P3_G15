@@ -1,12 +1,12 @@
 # A rudimentary file replicating Vector2Int in Unity
 # I use this instead of tuples because I can add functions to add and subtract
-from Vector2 import Vector2
+from Grid.Vector2 import Vector2
 
 class Vector2Int(Vector2):
     def __init__(self, x, y):
         if not (isinstance(x, int) and isinstance(y, int)):
             raise TypeError("Vector2Int requires two integers!")
-        super.__init__(x, y)
+        super().__init__(x, y)
     def __add__(self, other):
         return Vector2Int(self.x + other.x, self.y + other.y)
     def __sub__(self, other):

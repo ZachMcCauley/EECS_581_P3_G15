@@ -1,6 +1,6 @@
-from Vector2Int import Vector2Int
-from Vector2 import Vector2
-from GridTile import GridTile
+from Grid.Vector2Int import Vector2Int
+from Grid.Vector2 import Vector2
+from Grid.GridTile import GridTile
 
 class Grid:
     def __init__(self, positions):
@@ -11,8 +11,8 @@ class Grid:
     @staticmethod
     def FormFromDims(dims):
         pos = set()
-        for x in dims[0]:
-            for y in dims[1]:
+        for x in range( dims[0]):
+            for y in range(dims[1]):
                 pos.add(Vector2Int(x, y))
         return Grid(pos)
     def Render(self):

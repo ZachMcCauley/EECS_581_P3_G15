@@ -1,8 +1,6 @@
 # A rudimentary file replicating Vector2 in Unity
 # I use this instead of tuples because I can add functions to add and subtract
 import math
-from unittest import case
-
 
 class Vector2:
     def __init__(self, x, y):
