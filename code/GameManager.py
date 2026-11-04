@@ -1,4 +1,5 @@
 import pygame
+from ResourceManager import ResourceManager
 
 # This script is a base class. Menus, gameplay, etc. can inherit from this class.
 class GameManager:
@@ -7,6 +8,7 @@ class GameManager:
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.inGameLoop = True
+        self.resourceManager = ResourceManager.GetResourceManager()
     def Run(self):
         while self.inGameLoop:
             self.RunInternal()
