@@ -18,8 +18,8 @@ class Grid:
         return Grid(pos)
     def Render(self, screen):
         # Determine the size of each tile
-        xBounds = screen.get_size()[0] / (self.MaxX() - self.MinX())
-        yBounds = screen.get_size()[1] / (self.MaxY() - self.MinY())
+        xBounds = screen.get_size()[0] / (self.MaxX() - self.MinX() + 1)
+        yBounds = screen.get_size()[1] / (self.MaxY() - self.MinY() + 1)
         maxTileSize = min(xBounds, yBounds)
         maxTileSize = math.floor(maxTileSize)
         for tile in self.grid.values():

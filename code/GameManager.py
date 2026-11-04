@@ -21,4 +21,6 @@ class GameManager:
                 self.inGameLoop = False
     def RunInternal(self):
         self.ProcessInputs()
+        # Erase all rendering from the previous frame.
+        self.screen.fill((0, 0, 0))
         self.grid.Render(self.screen)
