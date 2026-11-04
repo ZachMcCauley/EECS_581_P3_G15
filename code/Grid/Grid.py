@@ -15,8 +15,9 @@ class Grid:
             for y in range(dims[1]):
                 pos.add(Vector2Int(x, y))
         return Grid(pos)
-    def Render(self):
-        raise NotImplementedError("Method to render Grid not implemented!")
+    def Render(self, screen):
+        for tile in self.grid.values():
+            tile.Render(screen)
     def MinX(self):
         toReturn = None
         for key in self.grid.keys():
