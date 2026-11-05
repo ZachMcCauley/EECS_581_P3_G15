@@ -4,18 +4,23 @@ from Grid.GridTile import GridTile
 import math
 
 class Grid:
+    # Create the grid
+    # The input is a list of Vector2Ints representing each position a tile occupies
     def __init__(self, positions):
         # Add grid spaces to dictionary
         self.grid = dict()
         for pos in positions:
             self.grid[pos] = GridTile(pos)
     @staticmethod
+    # Form a grid of some tuple of dimensions
+    # e.g. FormFromDims((5, 7)) produces a 5x7 Grid
     def FormFromDims(dims) -> Grid:
         pos = set()
         for x in range( dims[0]):
             for y in range(dims[1]):
                 pos.add(Vector2Int(x, y))
         return Grid(pos)
+    # Display the grid on the screen
     def Render(self, screen, screenSpace):
         # Determine the size of each tile
         screenSize = screen.get_size()
@@ -25,9 +30,7 @@ class Grid:
         maxTileSize = min(xBounds, yBounds)
         maxTileSize = math.floor(maxTileSize)
         """
-        Cry about it though I may, rendering is definitely one of those places where Unity makes your life easier.
-        Yes, I understand why you all wanted to use PyGame, and I don't blame you,
-        but it makes my life difficult.
+        WIP
         
         # Placeholder values so these variables exist in this scope
         offsetX, offsetY = 0, 0
@@ -40,37 +43,45 @@ class Grid:
         """
         for tile in self.grid.values():
             tile.Render(screen, maxTileSize)
+    # Get the lowest x coordinate of a tile on the grid
     def MinX(self) -> int:
         toReturn = None
         for key in self.grid.keys():
             if toReturn is None or key.x < toReturn:
                 toReturn = key.x
         return toReturn
+    # Get the highest x coordinate of a tile on the grid
     def MaxX(self) -> int:
         toReturn = None
         for key in self.grid.keys():
             if toReturn is None or key.x > toReturn:
                 toReturn = key.x
         return toReturn
+    # Get the lowest y coordinate on the grid
     def MinY(self) -> int:
         toReturn = None
         for key in self.grid.keys():
             if toReturn is None or key.y < toReturn:
                 toReturn = key.y
         return toReturn
+    # Get the highest y coordinate on the grid
     def MaxY(self) -> int:
         toReturn = None
         for key in self.grid.keys():
             if toReturn is None or key.y > toReturn:
                 toReturn = key.y
         return toReturn
+    # Get the center position of the grid
     def Center(self) -> Vector2:
         xCtr = (self.MinX() + self.MaxX()) / 2
         yCtr = (self.MinY() + self.MaxY()) / 2
         return Vector2(xCtr, yCtr)
-    def ContainsPosition(self, pos) -> bool:
+    # Check if a position is in the grid
+    def ContainsPosition(self, pos : Vector2Int) -> bool:
         return pos in self.grid.keys()
-    def GetTileByPosition(self, pos) -> GridTile:
+    # Get the contained tile in the grid
+    def GetTileByPosition(self, pos : Vector2Int) -> GridTile:
         return self.grid[pos]
+    # Get a list of all positions in the grid.
     def AllPositions(self) -> list:
         return list(self.grid.keys())

@@ -8,8 +8,12 @@ class ResourceManager:
         for filename in os.listdir(path):
             noAffix = filename.split('.')[0]
             self.resources[noAffix] = pygame.image.load(f"{path}/{filename}").convert_alpha()
+    def AllItemNames(self) -> list:
+        return list(self.resources.keys())
+    def GetItem(self, name) -> pygame.sprite.Sprite:
+        return self.resources[name]
     @staticmethod
-    def GetResourceManager():
+    def GetResourceManager() -> ResourceManager:
         if ResourceManager.Instance is None:
             return ResourceManager("./Resources/Items")
         else:
@@ -17,8 +21,4 @@ class ResourceManager:
     def __del__(self):
         if ResourceManager.Instance is self:
             ResourceManager.Instance = None
-    def AllItemNames(self):
-        return self.resources.keys()
-    def GetItem(self, name):
-        return self.resources[name]
     Instance = None

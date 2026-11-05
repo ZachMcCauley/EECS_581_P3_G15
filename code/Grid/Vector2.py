@@ -8,21 +8,21 @@ class Vector2:
             raise TypeError("Vector2 requires two numbers!")
         self.x = x
         self.y = y
-    def __add__(self, other):
+    def __add__(self, other) -> Vector2:
         return Vector2(self.x + other.x, self.y + other.y)
-    def __sub__(self, other):
+    def __sub__(self, other) -> Vector2:
         return Vector2(self.x - other.x, self.y - other.y)
-    def __mul__(self, other):
+    def __mul__(self, other) -> Vector2:
         return Vector2(int(self.x * other), int(self.y * other))
-    def __truediv__(self, other):
+    def __truediv__(self, other) -> Vector2:
         return Vector2(self.x / other, self.y / other)
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<{self.x}, {self.y}>"
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Vector2({self.x}, {self.y})"
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.x, self.y))
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
     def __getitem__(self, index):
         match index:
@@ -32,29 +32,29 @@ class Vector2:
                 return self.y
             case _:
                 raise IndexError(f"Index {index} out of range!")
-    def SqrMagnitude(self):
+    def SqrMagnitude(self) -> float:
         return self.x ** 2 + self.y ** 2
-    def Magnitude(self):
+    def Magnitude(self) -> float:
         return math.sqrt(self.SqrMagnitude())
-    def AsTuple(self):
+    def AsTuple(self) -> tuple:
         return (self.x, self.y)
-    def AsList(self):
+    def AsList(self) -> list:
         return [self.x, self.y]
     @staticmethod
-    def Zero():
+    def Zero() -> Vector2:
         return Vector2(0, 0)
     @staticmethod
-    def One():
+    def One() -> Vector2:
         return Vector2(1, 1)
     @staticmethod
-    def Up():
+    def Up() -> Vector2:
         return Vector2(0, 1)
     @staticmethod
-    def Down():
+    def Down() -> Vector2:
         return Vector2(0, -1)
     @staticmethod
-    def Left():
+    def Left() -> Vector2:
         return Vector2(-1, 0)
     @staticmethod
-    def Right():
+    def Right() -> Vector2:
         return Vector2(1, 0)
