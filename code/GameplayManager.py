@@ -16,15 +16,17 @@ class GameplayManager(GameManager):
         self.gridSpace = (0.6, 0.8)
         self.validTileNames = self.resourceManager.AllItemNames()
         self.draggedTile = None
+        self.canSelectTile = True
     def RunInternal(self):
         if pygame.mouse.get_pressed()[0]:
             selectingTile = self.grid.GetMousePositionInGrid()
             if self.draggedTile is not None and selectingTile is not None and self.draggedTile != selectingTile:
                 t1 = self.grid.GetTileByPosition(self.draggedTile)
                 t2 = self.grid.GetTileByPosition(selectingTile)
-                TileSwap.TileSwap(t1, t2)
+                TileSwap.ValidCheck(t1, t2)
                 self.draggedTile = None
-            else:
+                self.canSelectTile = False
+            elif self.canSelectTile:
                 self.draggedTile = selectingTile
         else:
             self.draggedTile = None
@@ -52,3 +54,5 @@ class GameplayManager(GameManager):
                 self.GetItemForTile(tile.position)
     def HandleSingleEvent(self, event: pygame.event.Event) -> None:
         super().HandleSingleEvent(event)
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            self.canSelectTile = True
