@@ -1,3 +1,5 @@
+import pygame.mouse
+
 from GameManager import GameManager
 from Grid.Grid import Grid
 from Grid.Vector2Int import Vector2Int
@@ -14,6 +16,7 @@ class GameplayManager(GameManager):
         self.validTileNames = self.resourceManager.AllItemNames()
     def RunInternal(self):
         super().RunInternal()
+        print(self.grid.GetMousePositionInGrid())
         # And render our grid
         self.CheckAllTilesItems()
         self.grid.Render(self.screen, self.gridSpace)

@@ -1,3 +1,5 @@
+import pygame
+
 from Grid.Vector2Int import Vector2Int
 from Grid.Vector2 import Vector2
 from Grid.GridTile import GridTile
@@ -74,7 +76,14 @@ class Grid:
     # Get a list of all positions in the grid.
     def AllPositions(self) -> list:
         return list(self.grid.keys())
-    
+    def GetMousePositionInGrid(self):
+        pos = pygame.mouse.get_pos()
+        toReturn = None
+        for tile in self.grid.values():
+            if tile.selectionRect is not None and tile.selectionRect.collidepoint(pos):
+                toReturn = tile.position
+                break
+        return toReturn
     #swap tiles at given positions, returns False if any error, True upon success
     #swap is done by changing the values of dctionary and then updating posiiton in GridTile to match its key 
     def SwapTiles(self, pos1: Vector2Int, pos2: Vector2Int) -> bool: #similar to ContainsPosition, accessing position in grid 
