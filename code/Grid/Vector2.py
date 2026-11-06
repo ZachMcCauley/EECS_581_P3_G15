@@ -13,7 +13,7 @@ class Vector2:
     def __sub__(self, other):
         return Vector2(self.x - other.x, self.y - other.y)
     def __mul__(self, other):
-        return Vector2(int(self.x * other), int(self.y * other))
+        return Vector2(self.x * other, self.y * other)
     def __truediv__(self, other):
         return Vector2(self.x / other, self.y / other)
     def __str__(self) -> str:

@@ -26,11 +26,10 @@ class Grid:
         screenSize = screen.get_size()
         xBounds = screenSize[0] * screenSpace[0] / (self.MaxX() - self.MinX() + 1)
         yBounds = screenSize[1] * screenSpace[1] / (self.MaxY() - self.MinY() + 1)
-        constrainedOnX = xBounds < yBounds
         maxTileSize = min(xBounds, yBounds)
         maxTileSize = math.floor(maxTileSize)
-        tileOffset = Vector2Int(self.MinX(), self.MinY()) * -1
-        pixelOffset = (screenSize[0] * (1 - screenSpace[0]) / 2, screenSize[1] * (1 - screenSpace[1]) / 2)
+        tileOffset = self.Center() * -1 - Vector2.One() / 2
+        pixelOffset = (screenSize[0] / 2, screenSize[1] / 2)
         for tile in self.grid.values():
             tile.Render(screen, maxTileSize, tileOffset, pixelOffset)
     # Get the lowest x coordinate of a tile on the grid
