@@ -1,5 +1,7 @@
 import pygame
 from Grid.Item import Item
+from Grid.Vector2Int import Vector2Int
+
 
 class GridTile:
     def __init__(self, position):
@@ -11,12 +13,13 @@ class GridTile:
     # Returns whether two tiles are adjacent.
     def IsAdjacentTo(self, other) -> bool:
         return (self.position - other.position).SqrMagnitude() == 1
-    def Render(self, screen, maxTileSize) -> None:
-        scaledSprite = pygame.transform.scale_by(self.sprite, maxTileSize / 32)
-        rect = pygame.Rect(self.position[0] * maxTileSize, self.position[1] * maxTileSize, maxTileSize, maxTileSize)
+    def Render(self, screen, maxTileSize, tileOffset = Vector2Int.Zero(), pixelOffset = (0, 0)) -> None:
+        scaledSprite = pygame.transform.scale_by(self.sprite, maxTileSize / self.sprite.get_width())
+        rect = pygame.Rect((tileOffset[0] + self.position[0]) * maxTileSize + pixelOffset[0], (tileOffset[1] + self.position[1]) * maxTileSize + pixelOffset[1], maxTileSize, maxTileSize)
         screen.blit(scaledSprite, rect)
         if self.item is not None:
-            self.item.Render(screen, self.position, maxTileSize)
+            itemOffset = (tileOffset[0] * maxTileSize + pixelOffset[0], tileOffset[1] * maxTileSize + pixelOffset[1])
+            self.item.Render(screen, self.position, maxTileSize, itemOffset)
     def StealItemFromMe(self) -> Item:
         toReturn = self.item
         self.item = None

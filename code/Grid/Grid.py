@@ -29,20 +29,10 @@ class Grid:
         constrainedOnX = xBounds < yBounds
         maxTileSize = min(xBounds, yBounds)
         maxTileSize = math.floor(maxTileSize)
-        """
-        WIP
-        
-        # Placeholder values so these variables exist in this scope
-        offsetX, offsetY = 0, 0
-        if constrainedOnX:
-            offsetX = screenSize[0] * (1 - screenSpace[0]) / 2 + maxTileSize * self.MinX()
-            offsetY = screenSize[1] * screenSpace[1] / 2 + maxTileSize * self.MinY()
-        else:
-            offsetX = screenSize[0] * (1 - screenSpace[0]) / 2 + maxTileSize * self.MinX()
-            offsetY = screenSize[1] * (1 - screenSpace[1]) / 2 + maxTileSize * self.MinY()
-        """
+        tileOffset = Vector2Int(self.MinX(), self.MinY()) * -1
+        pixelOffset = (screenSize[0] * (1 - screenSpace[0]) / 2, screenSize[1] * (1 - screenSpace[1]) / 2)
         for tile in self.grid.values():
-            tile.Render(screen, maxTileSize)
+            tile.Render(screen, maxTileSize, tileOffset, pixelOffset)
     # Get the lowest x coordinate of a tile on the grid
     def MinX(self) -> int:
         toReturn = None

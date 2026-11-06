@@ -16,8 +16,7 @@ class Item:
         return self.name
     def __repr__(self) -> str:
         return f"Item({self.name})"
-    # This is NOT tested. Your computer MIGHT explode when you run this!!!
     def Render(self, screen, position, pixelSize, offset = (0, 0)):
-        scaledSprite = pygame.transform.scale_by(self.unscaledSprite, pixelSize / 2048)
+        scaledSprite = pygame.transform.scale_by(self.unscaledSprite, pixelSize / self.unscaledSprite.get_width())
         rect = pygame.Rect(offset[0] + position[0] * pixelSize, offset[1] + position[1] * pixelSize, pixelSize, pixelSize)
         screen.blit(scaledSprite, rect)
