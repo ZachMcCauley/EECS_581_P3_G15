@@ -2,7 +2,7 @@ import os
 import pygame
 
 class ResourceManager:
-    def __init__(self, path):
+    def __init__(self, path = "./Resources/Items"):
         self.resources = dict()
         ResourceManager.Instance = self
         for filename in os.listdir(path):
@@ -12,13 +12,3 @@ class ResourceManager:
         return list(self.resources.keys())
     def GetItem(self, name) -> pygame.sprite.Sprite:
         return self.resources[name]
-    @staticmethod
-    def GetResourceManager() -> ResourceManager:
-        if ResourceManager.Instance is None:
-            return ResourceManager("./Resources/Items")
-        else:
-            return ResourceManager.Instance
-    def __del__(self):
-        if ResourceManager.Instance is self:
-            ResourceManager.Instance = None
-    Instance = None

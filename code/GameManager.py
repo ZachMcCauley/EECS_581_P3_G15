@@ -9,7 +9,7 @@ class GameManager:
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.inGameLoop = True
-        self.resourceManager = ResourceManager.GetResourceManager()
+        self.resourceManager = ResourceManager()
     def Run(self):
         while self.inGameLoop:
             # Do anything specific to this manager

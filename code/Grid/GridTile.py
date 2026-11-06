@@ -1,4 +1,5 @@
 import pygame
+from Grid.Item import Item
 
 class GridTile:
     def __init__(self, position):
@@ -14,3 +15,9 @@ class GridTile:
         scaledSprite = pygame.transform.scale_by(self.sprite, maxTileSize / 32)
         rect = pygame.Rect(self.position[0] * maxTileSize, self.position[1] * maxTileSize, maxTileSize, maxTileSize)
         screen.blit(scaledSprite, rect)
+        if self.item is not None:
+            self.item.Render(screen, self.position, maxTileSize)
+    def StealItemFromMe(self) -> Item:
+        toReturn = self.item
+        self.item = None
+        return toReturn
