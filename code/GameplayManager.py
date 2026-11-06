@@ -1,6 +1,7 @@
 import pygame.mouse
-
+import Grid.TileSwap
 from GameManager import GameManager
+from Grid import TileSwap
 from Grid.Grid import Grid
 from Grid.Vector2Int import Vector2Int
 from Grid.Item import Item
@@ -18,9 +19,11 @@ class GameplayManager(GameManager):
     def RunInternal(self):
         if pygame.mouse.get_pressed()[0]:
             selectingTile = self.grid.GetMousePositionInGrid()
-            if self.draggedTile is not None and selectingTile is not None and (self.draggedTile - selectingTile).SqrMagnitude() == 1:
-                # TODO - Swap tiles
-                print("Swap!")
+            if self.draggedTile is not None and selectingTile is not None and self.draggedTile != selectingTile:
+                t1 = self.grid.GetTileByPosition(self.draggedTile)
+                t2 = self.grid.GetTileByPosition(selectingTile)
+                TileSwap.TileSwap(t1, t2)
+                self.draggedTile = None
             else:
                 self.draggedTile = selectingTile
         else:

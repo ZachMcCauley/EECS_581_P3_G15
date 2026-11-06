@@ -24,6 +24,8 @@ class Vector2:
         return hash((self.x, self.y))
     def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y
+    def __ne__(self, other) -> bool:
+        return not (self == other)
     def __getitem__(self, index):
         match index:
             case 0:
