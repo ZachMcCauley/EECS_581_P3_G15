@@ -14,7 +14,7 @@ class Grid:
     @staticmethod
     # Form a grid of some tuple of dimensions
     # e.g. FormFromDims((5, 7)) produces a 5x7 Grid
-    def FormFromDims(dims) -> Grid:
+    def FormFromDims(dims):
         pos = set()
         for x in range( dims[0]):
             for y in range(dims[1]):
