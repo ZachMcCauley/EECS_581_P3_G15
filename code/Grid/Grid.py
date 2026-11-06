@@ -85,3 +85,21 @@ class Grid:
     # Get a list of all positions in the grid.
     def AllPositions(self) -> list:
         return list(self.grid.keys())
+    
+    #swap tiles at given positions, returns False if any error, True upon success
+    #swap is done by changing the values of dctionary and then updating posiiton in GridTile to match its key 
+    def SwapTiles(self, pos1: Vector2Int, pos2: Vector2Int) -> bool: #similar to ContainsPosition, accessing position in grid 
+        #check that both positions are in grid DO THIS 
+        if (self.ContainsPosition(pos1) and self.ContainsPosition(pos2)): 
+            Tile1=self.grid[pos1]
+            Tile2=self.grid[pos2]
+            if not Tile1.IsAdjacentTo(Tile2): 
+                print ("tiles not adjacent")
+                return False 
+            self.grid[pos1], self.grid[pos2] = Tile1, Tile2 #swap the tiles positions in grid dictionary  
+            Tile1.postion, Tile2.posiiton = pos1, pos2 #update positions to match the dictionary keys 
+            return True #if it made it this far it deserves to return true 
+        else: 
+            print("tiles not in grid")
+            return False 
+    
