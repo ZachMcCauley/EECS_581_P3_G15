@@ -14,9 +14,18 @@ class GameplayManager(GameManager):
         # Percentage of the window that the grid occupies for rendering
         self.gridSpace = (0.6, 0.8)
         self.validTileNames = self.resourceManager.AllItemNames()
+        self.draggedTile = None
     def RunInternal(self):
+        if pygame.mouse.get_pressed()[0]:
+            selectingTile = self.grid.GetMousePositionInGrid()
+            if self.draggedTile is not None and selectingTile is not None and (self.draggedTile - selectingTile).SqrMagnitude() == 1:
+                # TODO - Swap tiles
+                print("Swap!")
+            else:
+                self.draggedTile = selectingTile
+        else:
+            self.draggedTile = None
         super().RunInternal()
-        print(self.grid.GetMousePositionInGrid())
         # And render our grid
         self.CheckAllTilesItems()
         self.grid.Render(self.screen, self.gridSpace)
@@ -38,3 +47,5 @@ class GameplayManager(GameManager):
             tile = self.grid.GetTileByPosition(pos)
             if tile.item is None:
                 self.GetItemForTile(tile.position)
+    def HandleSingleEvent(self, event: pygame.event.Event) -> None:
+        super().HandleSingleEvent(event)
