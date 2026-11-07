@@ -6,7 +6,7 @@ def main() -> int:
     pygame.init()
     pygame.display.set_caption("Not Candy Crush")
     screenDims = GetScreenRes()
-    screen = pygame.display.set_mode(screenDims, pygame.RESIZABLE)
+    screen = pygame.display.set_mode((screenDims[0] - 50 ,screenDims[1] - 100), pygame.RESIZABLE)
     # Create gameplay manager and let it take over.
     gm = GameplayManager(screen)
     gm.Run()
