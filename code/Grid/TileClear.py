@@ -35,9 +35,12 @@ def _findMatch(grid, minLen = 3):
 
 def clearMatch(grid, minLen = 3) -> int:
     matched = _findMatch(grid, minLen)
-    for pos in matched:
-        tile = grid.GetTileByPosition(pos)
-        tile.item.OnClear(pos)
-        tile.item = None
+    #print(matched)
+    for pattern in matched:
+        for pos in pattern:
+            tile = grid.GetTileByPosition(pos)
+            if tile.item is not None:
+                tile.item.OnClear(pos)
+            tile.item = None
     return len(matched)
  
