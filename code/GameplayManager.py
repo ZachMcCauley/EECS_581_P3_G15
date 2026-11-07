@@ -56,3 +56,21 @@ class GameplayManager(GameManager):
         super().HandleSingleEvent(event)
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.canSelectTile = True
+
+    #move tiles downward until no tiles are none
+    def MoveDown(self) -> None:
+        moving = True #says if tiles are still moving downward
+        while moving:
+            moving = False #assume no tiles need to move downward until we move them
+            for tile in self.grid.keys():
+                if self.grid[tile].item is None: #tile is empty, needs a new item
+                    moving = True #tile is changed, will need to keep moving or check grid again
+                    above = tile + Vector2Int.Down() #determine position of above cell
+                    if above.y == -1: #tile is at the top of the grid, generate new random item
+                        spriteName = self.validTileNames[randint(0, len(self.validTileNames) - 1)]
+                        sprite = self.resourceManager.GetItem(spriteName)
+                        item = Item(spriteName, sprite)
+                        self.grid[tile].item = item
+                    else:
+                        self.grid[tile].item = self.grid[tile + Vector2Int.Down()].item #tile takes item value from above tile
+                        self.grid[tile + Vector2Int.Down()].item = None #above tile loses it's value
