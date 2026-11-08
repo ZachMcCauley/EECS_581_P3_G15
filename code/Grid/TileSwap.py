@@ -10,9 +10,4 @@ def ValidCheck(Tile1, Tile2): #check if swap is valid
     else: #play incorrect annimation 
         #animation call here
         return False 
-
-
-def TileSwap(Tile1, Tile2):
-    Tile1.item, Tile2.item = Tile2.item, Tile1.item
-    return True
     
