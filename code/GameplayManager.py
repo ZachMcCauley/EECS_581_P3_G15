@@ -1,9 +1,11 @@
 import pygame.mouse
 import Grid.TileSwap
 import Grid.TileClear
+import Grid.TileActions
 from GameManager import GameManager
 from Grid import TileSwap
 from Grid import TileClear
+from Grid import TileActions
 from Grid.Grid import Grid
 from Grid.Vector2Int import Vector2Int
 from Grid.Item import Item
@@ -25,9 +27,9 @@ class GameplayManager(GameManager):
             if self.draggedTile is not None and selectingTile is not None and self.draggedTile != selectingTile:
                 t1 = self.grid.GetTileByPosition(self.draggedTile)
                 t2 = self.grid.GetTileByPosition(selectingTile)
-                TileSwap.ValidCheck(t1, t2)
+                TileActions.callTileSwap(t1, t2)
                 if TileClear.clearMatch(self.grid) == 0: #no matches were made
-                    TileSwap.ValidCheck(t1, t2) #revert to previous state
+                    TileActions.callTileSwap(t1, t2) #revert to previous state
                 else:
                     self.draggedTile = None
                     self.canSelectTile = False
