@@ -32,7 +32,7 @@ class GameManager:
                 - Ryan Graham
             """
             state = self.RunInternal()
-            if state != 0:
+            if state != None and state != 0:
                 self.inGameLoop = False
                 if state == 2:
                     print("game lost")
