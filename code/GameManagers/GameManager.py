@@ -31,13 +31,7 @@ class GameManager:
                 
                 - Ryan Graham
             """
-            state = self.RunInternal()
-            if state != None and state != 0:
-                self.inGameLoop = False
-                if state == 2:
-                    print("game lost")
-                elif state == 1:
-                    print("game won")
+            self.RunInternal()
             # Update the rendering
             pygame.display.flip()
             # Update the PyGame clock
