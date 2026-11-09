@@ -13,7 +13,11 @@ class GameManager:
     def Run(self):
         while self.inGameLoop:
             # Do anything specific to this manager
-            self.RunInternal()
+            state = self.RunInternal()
+            if state != 0:
+                self.inGameLoop = False
+                if state == 2:
+                    print("game lost")
             # Update the rendering
             pygame.display.flip()
             # Update the PyGame clock
