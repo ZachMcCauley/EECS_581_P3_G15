@@ -1,15 +1,19 @@
-from GameplayManager import GameplayManager
+from GameManagers.GameplayManager import GameplayManager
+from GameManagerManager import GameManagerManager
+from GameManagers.TitleScreen import TitleScreen
 import pygame
 
 def main() -> int:
     # PyGame initialization
     pygame.init()
+    pygame.font.init()
     pygame.display.set_caption("Not Candy Crush")
     screenDims = GetScreenRes()
     screen = pygame.display.set_mode((screenDims[0] - 50 ,screenDims[1] - 100), pygame.RESIZABLE)
     # Create gameplay manager and let it take over.
-    gm = GameplayManager(screen)
-    gm.Run()
+    gmm = GameManagerManager(screen)
+    gmm.AddGameManager(TitleScreen)
+    gmm.Run()
     return 0
 
 def GetScreenRes() -> tuple:
