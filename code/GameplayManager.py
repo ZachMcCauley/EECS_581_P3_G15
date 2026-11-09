@@ -12,7 +12,7 @@ from Grid.Item import Item
 from random import randint
 
 class GameplayManager(GameManager):
-    def __init__(self, screen, fps = 60):
+    def __init__(self, screen, moves = 10, fps = 60):
         super().__init__(screen, fps)
         # Also form our grid.
         self.grid = Grid.FormFromDims((8, 8))
@@ -21,7 +21,10 @@ class GameplayManager(GameManager):
         self.validTileNames = self.resourceManager.AllItemNames()
         self.draggedTile = None
         self.canSelectTile = True
-    def RunInternal(self):
+        self.rem_moves = moves
+    def RunInternal(self) -> int: #return 0 if game is still running, 1 if game is won, 2 if game is lost
+        if self.rem_moves <= 0:
+            return 2
         if pygame.mouse.get_pressed()[0]:
             selectingTile = self.grid.GetMousePositionInGrid()
             if self.draggedTile is not None and selectingTile is not None and self.draggedTile != selectingTile:
@@ -33,6 +36,7 @@ class GameplayManager(GameManager):
                 else:
                     self.draggedTile = None
                     self.canSelectTile = False
+                    self.rem_moves -= 1
             elif self.canSelectTile:
                 self.draggedTile = selectingTile
         else:
@@ -42,6 +46,7 @@ class GameplayManager(GameManager):
         TileClear.clearMatch(self.grid)
         self.CheckAllTilesItems()
         self.grid.Render(self.screen, self.gridSpace)
+        return 0
     # Generate an item for a tile.
     def GetItemForTile(self, tilePosition):
         # Down is up. Don't think about it too hard.
