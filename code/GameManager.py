@@ -9,6 +9,7 @@ class GameManager:
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.inGameLoop = True
+        self.EndedInQuit = False
         self.resourceManager = ResourceManager()
     def Run(self):
         while self.inGameLoop:
@@ -21,8 +22,9 @@ class GameManager:
     def HandleSingleEvent(self, event: pygame.event.Event) -> None:
         # Detect quitters
         # Subclasses can amend this function as they deem fit.
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             self.inGameLoop = False
+            self.EndedInQuit = True
     def ProcessInputs(self) -> None:
         # The loop for inputs
         # This should not be altered by subclasses
