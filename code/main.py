@@ -1,4 +1,5 @@
 from GameplayManager import GameplayManager
+from GameManagerManager import GameManagerManager
 import pygame
 
 def main() -> int:
@@ -8,8 +9,9 @@ def main() -> int:
     screenDims = GetScreenRes()
     screen = pygame.display.set_mode((screenDims[0] - 50 ,screenDims[1] - 100), pygame.RESIZABLE)
     # Create gameplay manager and let it take over.
-    gm = GameplayManager(screen)
-    gm.Run()
+    gmm = GameManagerManager(screen)
+    gmm.AddGameManager(GameplayManager)
+    gmm.Run()
     return 0
 
 def GetScreenRes() -> tuple:
