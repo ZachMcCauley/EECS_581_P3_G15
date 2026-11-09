@@ -12,7 +12,7 @@ from Grid.Item import Item
 from random import randint
 
 class GameplayManager(GameManager):
-    def __init__(self, screen, moves = 10, fps = 60):
+    def __init__(self, screen, moves = 10, win_con = {"piece_mail":6}, fps = 60):
         super().__init__(screen, fps)
         # Also form our grid.
         self.grid = Grid.FormFromDims((8, 8))
@@ -22,16 +22,25 @@ class GameplayManager(GameManager):
         self.draggedTile = None
         self.canSelectTile = True
         self.rem_moves = moves
+        self.win_con = win_con
     def RunInternal(self) -> int: #return 0 if game is still running, 1 if game is won, 2 if game is lost
         if self.rem_moves <= 0:
             return 2
+        won = True
+        for value in self.win_con.values():
+            if value == 0:
+                won = won and True
+            else:
+                won = won and False
+        if won:
+            return 1
         if pygame.mouse.get_pressed()[0]:
             selectingTile = self.grid.GetMousePositionInGrid()
             if self.draggedTile is not None and selectingTile is not None and self.draggedTile != selectingTile:
                 t1 = self.grid.GetTileByPosition(self.draggedTile)
                 t2 = self.grid.GetTileByPosition(selectingTile)
                 TileActions.callTileSwap(t1, t2)
-                if TileClear.clearMatch(self.grid) == 0: #no matches were made
+                if TileActions.clearMatch(self.grid, self.win_con) == 0: #no matches were made
                     TileActions.callTileSwap(t1, t2) #revert to previous state
                 else:
                     self.draggedTile = None
@@ -43,7 +52,7 @@ class GameplayManager(GameManager):
             self.draggedTile = None
         super().RunInternal()
         # And render our grid
-        TileClear.clearMatch(self.grid)
+        TileActions.clearMatch(self.grid, self.win_con)
         self.CheckAllTilesItems()
         self.grid.Render(self.screen, self.gridSpace)
         return 0

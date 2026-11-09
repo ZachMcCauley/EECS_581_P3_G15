@@ -62,14 +62,17 @@ def _findMatch(grid, minLen = 3):
                 matches.append(currentMatch)
     return matches
 
-def clearMatch(grid, minLen = 3) -> int: #get rid of tiles that are matched from grid 
+def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are matched from grid 
     matched = _findMatch(grid, minLen)
-    #print(matched)
     for pattern in matched:
         for pos in pattern:
             tile = grid.GetTileByPosition(pos)
             if tile.item is not None:
                 tile.item.OnClear(pos)
+                for key in win_con.keys():
+                    if key == tile.item.name:
+                        if win_con[key] > 0:
+                            win_con[key] -= 1
             tile.item = None
     return len(matched)
 #code by emilia Davis end 

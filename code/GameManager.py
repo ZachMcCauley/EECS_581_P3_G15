@@ -18,6 +18,8 @@ class GameManager:
                 self.inGameLoop = False
                 if state == 2:
                     print("game lost")
+                elif state == 1:
+                    print("game won")
             # Update the rendering
             pygame.display.flip()
             # Update the PyGame clock
