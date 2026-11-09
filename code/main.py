@@ -1,4 +1,4 @@
-from GameplayManager import GameplayManager
+from GameManagers.GameplayManager import GameplayManager
 from GameManagerManager import GameManagerManager
 import pygame
 

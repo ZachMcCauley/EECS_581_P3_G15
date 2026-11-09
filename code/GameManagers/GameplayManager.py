@@ -2,8 +2,7 @@ import pygame.mouse
 import Grid.TileSwap
 import Grid.TileClear
 import Grid.TileActions
-from GameManager import GameManager
-from Grid import TileSwap
+from GameManagers.GameManager import GameManager
 from Grid import TileClear
 from Grid import TileActions
 from Grid.Grid import Grid
