@@ -21,6 +21,9 @@ class PauseScreen(SelectionMenu):
                     self.inGameLoop = False
                     self.removeFromStack = 2
                     print("Quit the main game")
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+            print("Unpause")
+            self.inGameLoop = False
     def Render(self):
         screenDims = self.screen.get_size()
         self.buttons["RESUME"].SetRect(pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4, 512, 64))
