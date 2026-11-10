@@ -9,6 +9,7 @@ from Grid.Grid import Grid
 from Grid.Vector2Int import Vector2Int
 from Grid.Item import Item
 from random import randint
+from GameManagers.PauseScreen import PauseScreen
 
 class GameplayManager(GameManager):
     def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
@@ -79,6 +80,10 @@ class GameplayManager(GameManager):
         super().HandleSingleEvent(event)
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.canSelectTile = True
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+            # Pause the game
+            self.surrenderControl = True
+            self.owner.AddGameManager(PauseScreen)
     def SetRequirements(self, moves, win_con):
         self.rem_moves = moves
         self.win_con = win_con

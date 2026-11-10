@@ -1,26 +1,18 @@
+from GameManagers import SelectionMenu
 from GameManagers.GameManager import GameManager
 from GameManagers.GameplayManager import GameplayManager
+from GameManagers.SelectionMenu import SelectionMenu
 import pygame
+from Prefabs.Button import Button
 
-class TitleScreen(GameManager):
+
+class TitleScreen(SelectionMenu):
     def __init__(self, screen, fps):
         super().__init__(screen, fps)
-        self.playButtonRect = pygame.Rect(0, 0, 0, 0)
-        self.quitButtonRect = pygame.Rect(0, 0, 0, 0)
-        self.hoveredRect = "NONE"
-    def RunInternal(self) -> None:
-        super().RunInternal()
-        # Render the title screen.
-        self.Render()
+        self.buttons["PLAY"] = Button(self.resourceManager.menuSprites["PLAY"], matchWidth=False)
+        self.buttons["QUIT"] = Button(self.resourceManager.menuSprites["QUIT"], matchWidth=False)
     def HandleSingleEvent(self, event: pygame.event.Event) -> None:
         super().HandleSingleEvent(event)
-        mousePos = pygame.mouse.get_pos()
-        if self.playButtonRect.collidepoint(mousePos):
-            self.hoveredRect = "PLAY"
-        elif self.quitButtonRect.collidepoint(mousePos):
-            self.hoveredRect = "QUIT"
-        else:
-            self.hoveredRect = "NONE"
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Left click
             match self.hoveredRect:
@@ -33,14 +25,13 @@ class TitleScreen(GameManager):
                     print("Should quit now")
     def Render(self):
         screenDims = self.screen.get_size()
-        # TODO - Move this code into its own class to not repeat myself
-        self.playButtonRect = pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4, 512, 64)
-        self.quitButtonRect = pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4 + 128, 512, 64)
+        self.buttons["PLAY"].SetRect(pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4, 512, 64))
+        self.buttons["QUIT"].SetRect(pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4 + 128, 512, 64))
         titleRect = pygame.Rect(screenDims[0] * 0.35, screenDims[1] * 0.2, screenDims[0] * 0.3, 0)
-        self.screen.blit(pygame.transform.scale_by(self.resourceManager.menuSprites["PLAY"], 2), self.playButtonRect)
-        self.screen.blit(pygame.transform.scale_by(self.resourceManager.menuSprites["QUIT"], 2), self.quitButtonRect)
+        for button in self.buttons.values():
+            button.Render(self.screen)
         unscaledTitle = self.resourceManager.menuSprites["TITLE"]
-        titleSprite = pygame.transform.scale_by(unscaledTitle, titleRect.width /  unscaledTitle.get_width())
+        titleSprite = pygame.transform.scale_by(unscaledTitle, titleRect.width / unscaledTitle.get_width())
         self.screen.blit(titleSprite, titleRect)
         cursorRect = pygame.Rect(screenDims[0] * 0.4 - 64, screenDims[1] * 0.4, 64, 64)
         match self.hoveredRect:

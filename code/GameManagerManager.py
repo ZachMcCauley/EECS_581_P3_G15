@@ -22,4 +22,6 @@ class GameManagerManager:
                 print("Game Manager Ended By User Quit. Program should terminate now.")
                 break
             if not manager.inGameLoop:
-                self.managerStack.pop()
+                # Repeat multiple times if necessary. By default, will repeat once
+                for i in range(manager.removeFromStack):
+                    self.managerStack.pop()

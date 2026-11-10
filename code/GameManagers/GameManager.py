@@ -10,6 +10,8 @@ class GameManager:
         self.clock = pygame.time.Clock()
         # Set this to false to end this state of the game.
         self.inGameLoop = True
+        # How many GameManagers should be removed from the stack after this ends
+        self.removeFromStack = 1
         # This says whether the GameManager ended because the user quit. If so, we should end the program ASAP.
         self.EndedInQuit = False
         # Set this to True to pause execution of this manager without ending it.
@@ -33,7 +35,6 @@ class GameManager:
             self.EndedInQuit = True
     def ProcessInputs(self) -> None:
         # The loop for inputs
-        # This should not be altered by subclasses
         for event in pygame.event.get():
             self.HandleSingleEvent(event)
     def RunInternal(self) -> None:
@@ -44,3 +45,6 @@ class GameManager:
         self.screen.fill((0, 0, 0))
     def SetOwner(self, owner):
         self.owner = owner
+    def Render(self):
+        # This should never be invoked
+        pass
