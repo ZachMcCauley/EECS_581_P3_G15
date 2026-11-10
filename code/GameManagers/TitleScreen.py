@@ -36,8 +36,12 @@ class TitleScreen(GameManager):
         # TODO - Move this code into its own class to not repeat myself
         self.playButtonRect = pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4, 512, 64)
         self.quitButtonRect = pygame.Rect(screenDims[0] * 0.4, screenDims[1] * 0.4 + 128, 512, 64)
+        titleRect = pygame.Rect(screenDims[0] * 0.35, screenDims[1] * 0.2, screenDims[0] * 0.3, 0)
         self.screen.blit(pygame.transform.scale_by(self.resourceManager.menuSprites["PLAY"], 2), self.playButtonRect)
         self.screen.blit(pygame.transform.scale_by(self.resourceManager.menuSprites["QUIT"], 2), self.quitButtonRect)
+        unscaledTitle = self.resourceManager.menuSprites["TITLE"]
+        titleSprite = pygame.transform.scale_by(unscaledTitle, titleRect.width /  unscaledTitle.get_width())
+        self.screen.blit(titleSprite, titleRect)
         cursorRect = pygame.Rect(screenDims[0] * 0.4 - 64, screenDims[1] * 0.4, 64, 64)
         match self.hoveredRect:
             case "PLAY":

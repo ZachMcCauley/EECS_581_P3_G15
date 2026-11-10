@@ -20,17 +20,6 @@ class GameManager:
         self.surrenderControl = False
         while self.inGameLoop and not self.surrenderControl:
             # Do anything specific to this manager
-            """
-                I would appreciate it if this code was moved to GameplayManager
-                GameManager is meant to be a more general class that is inherited by
-                various other classes, each subclass representing a state the game can be in.
-                For example, any menu would be its own subclass of GameManager. Integrating this
-                code with GameplayManager is a low priority matter though.
-                
-                Note: 'this code' refers to anything pertaining to the main candy crush game loop.
-                
-                - Ryan Graham
-            """
             self.RunInternal()
             # Update the rendering
             pygame.display.flip()
