@@ -23,6 +23,7 @@ class GameplayManager(GameManager):
         self.canSelectTile = True
         self.rem_moves = moves
         self.win_con = win_con
+        self.pauseRect = pygame.Rect(8, 8, 64, 64)
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = True
         for value in self.win_con.values():
@@ -56,7 +57,7 @@ class GameplayManager(GameManager):
         # And render our grid
         TileActions.clearMatch(self.grid, self.win_con)
         self.CheckAllTilesItems()
-        self.grid.Render(self.screen, self.gridSpace)
+        self.Render()
         return
     # Generate an item for a tile.
     def GetItemForTile(self, tilePosition):
@@ -78,12 +79,23 @@ class GameplayManager(GameManager):
                 self.GetItemForTile(tile.position)
     def HandleSingleEvent(self, event: pygame.event.Event) -> None:
         super().HandleSingleEvent(event)
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        mousePos = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.pauseRect.collidepoint(mousePos):
+            self.DoPause()
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.canSelectTile = True
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-            # Pause the game
-            self.surrenderControl = True
-            self.owner.AddGameManager(PauseScreen)
+            self.DoPause()
     def SetRequirements(self, moves, win_con):
         self.rem_moves = moves
         self.win_con = win_con
+    def Render(self):
+        pauseSprite = pygame.transform.scale_by(self.resourceManager.pauseButton, 2)
+        self.screen.blit(pauseSprite, self.pauseRect)
+        self.grid.Render(self.screen, self.gridSpace)
+    def DoPause(self):
+        if not self.surrenderControl:
+            # Pause the game
+            self.surrenderControl = True
+            self.owner.AddGameManager(PauseScreen)
+            print("Pause")

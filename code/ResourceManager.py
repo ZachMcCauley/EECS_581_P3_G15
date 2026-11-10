@@ -13,6 +13,7 @@ class ResourceManager:
         self.menuSprites["PLAY"] = pygame.image.load("./Resources/Menu/PlayButton.png").convert_alpha()
         self.menuSprites["QUIT"] = pygame.image.load("./Resources/Menu/QuitButton.png").convert_alpha()
         self.menuSprites["TITLE"] = pygame.image.load("./Resources/Menu/Title.png").convert_alpha()
+        self.pauseButton = pygame.image.load("./Resources/Menu/pause.png").convert_alpha()
     def AllItemNames(self) -> list:
         return list(self.resources.keys())
     def GetItem(self, name) -> pygame.sprite.Sprite:
