@@ -94,7 +94,7 @@ class GameplayManager(GameManager):
         self.screen.blit(pauseSprite, self.pauseRect)
         self.grid.Render(self.screen, self.gridSpace)
     def DoPause(self):
-        if not self.surrenderControl:
+        if not self.surrenderControl and self.inGameLoop:
             # Pause the game
             self.surrenderControl = True
             self.owner.AddGameManager(PauseScreen)
