@@ -14,8 +14,7 @@ from GameManagers.PauseScreen import PauseScreen
 class GameplayManager(GameManager):
     def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
         super().__init__(screen, fps)
-        # Also form our grid.
-        self.grid = Grid.FormFromDims((8, 8))
+        # Define our constants first
         # Percentage of the window that the grid occupies for rendering
         self.gridSpace = (0.6, 0.8)
         self.validTileNames = self.resourceManager.AllItemNames()
@@ -24,6 +23,11 @@ class GameplayManager(GameManager):
         self.rem_moves = moves
         self.win_con = win_con
         self.pauseRect = pygame.Rect(8, 8, 64, 64)
+        # Also form our grid.
+        self.grid = Grid.FormFromDims((8, 8))
+        # Fill our grid with items
+        for space in self.grid.AllPositions():
+            self.GenerateItemForTile(space, False)
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = True
         for value in self.win_con.values():
@@ -67,11 +71,13 @@ class GameplayManager(GameManager):
             aboveTile = self.grid.GetTileByPosition(tilePosition + Vector2Int.Down())
             self.grid.GetTileByPosition(tilePosition).item = aboveTile.StealItemFromMe()
         else:
-            # Tile is at top of grid. Generate a new item.
-            spriteName = self.validTileNames[randint(0, len(self.validTileNames) - 1)]
-            sprite = self.resourceManager.GetItem(spriteName)
-            item = Item(spriteName, sprite)
-            self.grid.GetTileByPosition(tilePosition).item = item
+            self.GenerateItemForTile(tilePosition, True)
+    def GenerateItemForTile(self, tilePosition, doFall):
+        # Tile is at top of grid. Generate a new item.
+        spriteName = self.validTileNames[randint(0, len(self.validTileNames) - 1)]
+        sprite = self.resourceManager.GetItem(spriteName)
+        item = Item(spriteName, sprite, 1 if doFall else 0)
+        self.grid.GetTileByPosition(tilePosition).item = item
     def CheckAllTilesItems(self):
         for pos in self.grid.AllPositions():
             tile = self.grid.GetTileByPosition(pos)
@@ -92,7 +98,7 @@ class GameplayManager(GameManager):
     def Render(self):
         pauseSprite = pygame.transform.scale_by(self.resourceManager.pauseButton, 2)
         self.screen.blit(pauseSprite, self.pauseRect)
-        self.grid.Render(self.screen, self.gridSpace)
+        self.grid.Render(self.screen, self.gridSpace, self.timeSinceLastTick)
     def DoPause(self):
         if not self.surrenderControl and self.inGameLoop:
             # Pause the game

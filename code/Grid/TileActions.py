@@ -63,6 +63,9 @@ def _findMatch(grid, minLen = 3):
     return matches
 
 def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are matched from grid 
+    # Do not match tiles while grid is unstable
+    if not grid.IsStable():
+        return 0
     matched = _findMatch(grid, minLen)
     for pattern in matched:
         for pos in pattern:

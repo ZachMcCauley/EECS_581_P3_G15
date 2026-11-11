@@ -23,7 +23,7 @@ class Grid:
                 pos.add(Vector2Int(x, y))
         return Grid(pos)
     # Display the grid on the screen
-    def Render(self, screen, screenSpace):
+    def Render(self, screen, screenSpace, timeSinceLastTick = 16):
         # Determine the size of each tile
         screenSize = screen.get_size()
         xBounds = screenSize[0] * screenSpace[0] / (self.MaxX() - self.MinX() + 1)
@@ -33,7 +33,9 @@ class Grid:
         tileOffset = self.Center() * -1 - Vector2.One() / 2
         pixelOffset = (screenSize[0] / 2, screenSize[1] / 2)
         for tile in self.grid.values():
-            tile.Render(screen, maxTileSize, tileOffset, pixelOffset)
+            tile.Render(screen, maxTileSize, tileOffset, pixelOffset, timeSinceLastTick)
+        for tile in self.grid.values():
+            tile.RenderItem(screen, maxTileSize, tileOffset, pixelOffset, timeSinceLastTick)
     # Get the lowest x coordinate of a tile on the grid
     def MinX(self) -> int:
         toReturn = None
@@ -84,6 +86,11 @@ class Grid:
                 toReturn = tile.position
                 break
         return toReturn
+    def IsStable(self) -> bool:
+        for tile in self.grid.values():
+            if not tile.IsStable():
+                return False
+        return True
     '''
     #swap tiles at given positions, returns False if any error, True upon success
     #swap is done by changing the values of dctionary and then updating posiiton in GridTile to match its key 

@@ -18,6 +18,7 @@ class GameManager:
         self.surrenderControl = False
         self.resourceManager = ResourceManager()
         self.owner = None
+        self.timeSinceLastTick = 0
     def Run(self):
         self.surrenderControl = False
         while self.inGameLoop and not self.surrenderControl:
@@ -26,7 +27,7 @@ class GameManager:
             # Update the rendering
             pygame.display.flip()
             # Update the PyGame clock
-            self.clock.tick(self.fps)
+            self.timeSinceLastTick = self.clock.tick(self.fps)
     def HandleSingleEvent(self, event: pygame.event.Event) -> None:
         # Detect quitters
         # Subclasses can amend this function as they deem fit.
