@@ -10,6 +10,8 @@ from Grid.Vector2Int import Vector2Int
 from Grid.Item import Item
 from random import randint
 from GameManagers.PauseScreen import PauseScreen
+# Yes, I know this is bad practice. Do I care? No.
+from Grid.TileClear import _findMatch
 
 class GameplayManager(GameManager):
     def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
@@ -28,6 +30,7 @@ class GameplayManager(GameManager):
         # Fill our grid with items
         for space in self.grid.AllPositions():
             self.GenerateItemForTile(space, False)
+        self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = True
         for value in self.win_con.values():
@@ -105,3 +108,17 @@ class GameplayManager(GameManager):
             self.surrenderControl = True
             self.owner.AddGameManager(PauseScreen)
             print("Pause")
+    """
+        Reassign the items in tiles to avoid any matches.
+        Call this when the grid is initially formed
+        This is not the most efficient implementation of
+        This function, and it's worst case time complexity
+        Is O(Infinity), but I don't care.
+    """
+    def ChangeTilesToAvoidMatches(self):
+        matches = _findMatch(self.grid)
+        while len(matches) > 0:
+            firstMatch = matches[0]
+            pos = firstMatch[0]
+            self.GenerateItemForTile(pos, False)
+            matches = _findMatch(self.grid)
