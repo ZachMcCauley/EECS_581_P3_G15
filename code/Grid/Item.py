@@ -32,3 +32,8 @@ class Item:
         self.posRelativeToOwner.y += 1
     def GetDistanceFromOwner(self) -> float:
         return self.posRelativeToOwner.Magnitude()
+
+class PowerUp(Item):
+    def __init__(self, base_item: Item, powerup_type: str, sprite = None):
+        super().__init__(base_item.name, sprite if sprite is not None else base_item.unscaledSprite)
+        self.powerup_type = powerup_type
