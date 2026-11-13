@@ -1,6 +1,7 @@
 from GameManagers import SelectionMenu
 from GameManagers.GameManager import GameManager
 from GameManagers.GameplayManager import GameplayManager
+from GameManagers.LevelScreen import LevelScreen
 from GameManagers.SelectionMenu import SelectionMenu
 import pygame
 from Prefabs.Button import Button
@@ -18,8 +19,8 @@ class TitleScreen(SelectionMenu):
             match self.hoveredRect:
                 case "PLAY":
                     self.surrenderControl = True
-                    print("Should go to gameplay now")
-                    self.owner.AddGameManager(GameplayManager)
+                    print("Should go to level select now")
+                    self.owner.AddGameManager(LevelScreen)
                 case "QUIT":
                     self.inGameLoop = False
                     print("Should quit now")

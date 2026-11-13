@@ -5,18 +5,16 @@ class GameManagerManager:
         self.screen = screen
         self.fps = fps
         self.managerStack = []
-    def AddGameManager(self, manager):
-        gm = manager(self.screen, self.fps)
+    #extra arguments are passed to the manager (e.g. a level's moves and goal)
+    def AddGameManager(self, manager, *args):
+        gm = manager(self.screen, self.fps, *args)
         self.managerStack.append(gm)
         gm.SetOwner(self)
     def Run(self):
         while len(self.managerStack) > 0:
             # Get last element of manager stack
             manager = self.managerStack[-1]
-            if isinstance(manager, GameplayManager.GameplayManager): #effectively level control
-                #base loss condition is the user loses after 10 moves if objective has not been completed
-                #base win condition is the user must score four mail pieces
-                manager.SetRequirements(10, {"piece_mail":4}) #sets the win and loss conditions for the level
+            #level requirements are now set by the level screen when it starts gameplay (see Levels.py)
             manager.Run()
             if manager.EndedInQuit:
                 print("Game Manager Ended By User Quit. Program should terminate now.")

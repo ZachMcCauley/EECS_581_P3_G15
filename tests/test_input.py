@@ -26,7 +26,7 @@ class FakeMouse:
 #a game with the known board drawn once, plus a fake mouse
 @pytest.fixture
 def game(monkeypatch):
-    from GameplayManager import GameplayManager
+    from GameManagers.GameplayManager import GameplayManager
     gm = GameplayManager(pygame.display.get_surface())
     fill(gm.grid, BOARD)
     gm.grid.Render(gm.screen, gm.gridSpace)   #sets each tile's selectionRect
