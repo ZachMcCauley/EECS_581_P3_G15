@@ -144,7 +144,7 @@ class GameplayManager(GameManager):
     def Render(self):
         # Render Catland
         catName = "catLand"
-        if self.rem_moves <= 3:
+        if self.rem_moves <= 0:
             catName = "catLandEvil"
         catSprite = self.resourceManager.GetCat(catName)
         catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))

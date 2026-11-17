@@ -7,7 +7,7 @@ def main() -> int:
     # PyGame initialization
     pygame.init()
     pygame.font.init()
-    pygame.display.set_caption("Not Candy Crush")
+    pygame.display.set_caption("Bit-Flip")
     screenDims = GetScreenRes()
     screen = pygame.display.set_mode((screenDims[0] - 50 ,screenDims[1] - 100), pygame.RESIZABLE)
     # Create gameplay manager and let it take over.
