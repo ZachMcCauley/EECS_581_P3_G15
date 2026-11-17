@@ -10,7 +10,11 @@ class ResourceManager:
         self.powers = dict()
         for filename in os.listdir(powerPath):
             noAffix = filename.split('.')[0]
-            self.powers[noAffix] = pygame.image.load(f"{path}/{filename}").convert_alpha()
+            self.powers[noAffix] = pygame.image.load(f"{powerPath}/{filename}").convert_alpha()
+        self.catLand = dict()
+        for filename in os.listdir("./Resources/CatLand"):
+            noAffix = filename.split('.')[0]
+            self.catLand[noAffix] = pygame.image.load(f"./Resources/CatLand/{filename}").convert_alpha()
         self.cursorSprite = pygame.image.load("./Resources/Menu/Selector.png").convert_alpha()
         self.menuSprites = dict()
         self.menuSprites["PLAY"] = pygame.image.load("./Resources/Menu/PlayButton.png").convert_alpha()
@@ -25,3 +29,5 @@ class ResourceManager:
         return self.menuSprites[name]
     def GetMenuCursor(self):
         return self.cursorSprite
+    def GetCat(self, name = "catLand"):
+        return self.catLand[name]
