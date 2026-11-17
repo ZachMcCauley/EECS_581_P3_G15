@@ -14,6 +14,7 @@ from random import randint
 from GameManagers.PauseScreen import PauseScreen
 # Yes, I know this is bad practice. Do I care? No.
 from Grid.TileClear import _findMatch
+from re import fullmatch
 
 class GameplayManager(GameManager):
     def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}, level_num = 1):
@@ -41,9 +42,13 @@ class GameplayManager(GameManager):
             positions = set()
             startedPositions = False
             for line in file:
+                line = line.strip("\n")
                 if startedPositions and not line.startswith("Vector2Int"):
                     break
                 elif startedPositions:
+                    # We should check our string before running eval in case it somehow contains mallicious code.
+                    if not bool(fullmatch("Vector2Int\\(\\d+, *\\d+\\)", line)):
+                        raise RuntimeError("Level line " + line + " is not safe to evaluate, and may be tampered with!")
                     positions.add(eval(line))
                 elif line.startswith("Positions:"):
                     startedPositions = True
