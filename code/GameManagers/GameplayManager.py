@@ -1,5 +1,3 @@
-import os.path
-
 import pygame.mouse
 #import Grid.TileSwap
 #import Grid.TileClear
@@ -16,59 +14,23 @@ from GameManagers.PauseScreen import PauseScreen
 from Grid.TileClear import _findMatch
 
 class GameplayManager(GameManager):
-    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}, level_num = 1):
+    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
         super().__init__(screen, fps)
         # Define our constants first
         # Percentage of the window that the grid occupies for rendering
         self.gridSpace = (0.6, 0.8)
-        self.validTileNames = []
+        self.validTileNames = self.resourceManager.AllItemNames()
         self.draggedTile = None
         self.canSelectTile = True
         self.rem_moves = moves
         self.win_con = win_con
         self.pauseRect = pygame.Rect(8, 8, 64, 64)
-        self.grid = None
-        self.FormFromLevelInfo(level_num)
-        self.ChangeTilesToAvoidMatches()
-    def FormFromLevelInfo(self, level_num = None):
-        filename = "./Resources/Levels/level-" + str(level_num) + ".lvl"
-        if level_num is None or not os.path.isfile(filename):
-            # Also form our grid.
-            self.grid = Grid.FormFromDims((8, 8))
-        else:
-            file = open(filename, "r")
-            # Get positions in grid
-            positions = set()
-            startedPositions = False
-            for line in file:
-                if startedPositions and not line.startswith("Vector2Int"):
-                    break
-                elif startedPositions:
-                    positions.add(eval(line))
-                elif line.startswith("Positions:"):
-                    startedPositions = True
-                    continue
-                else:
-                    continue
-            self.grid = Grid(positions)
-            # Determine which items are in play.
-            startedItems = False
-            file.seek(0)
-            for line in file:
-                line = line.strip("\n")
-                if startedItems and line.endswith(":"):
-                    break
-                elif startedItems:
-                    self.validTileNames.append(line)
-                elif line.startswith("Items:"):
-                    startedItems = True
-                    continue
-                else:
-                    continue
-            file.close()
+        # Also form our grid.
+        self.grid = Grid.FormFromDims((8, 8))
         # Fill our grid with items
         for space in self.grid.AllPositions():
             self.GenerateItemForTile(space, False)
+        self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = True
         for value in self.win_con.values():
