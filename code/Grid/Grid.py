@@ -31,7 +31,7 @@ class Grid:
         maxTileSize = min(xBounds, yBounds)
         maxTileSize = math.floor(maxTileSize)
         tileOffset = self.Center() * -1 - Vector2.One() / 2
-        pixelOffset = (screenSize[0] / 2, screenSize[1] / 2)
+        pixelOffset = ((screenSize[0] * (screenSpace[0] / 2 + 0.05)), screenSize[1] * 0.5)
         for tile in self.grid.values():
             tile.Render(screen, maxTileSize, tileOffset, pixelOffset, timeSinceLastTick)
         for tile in self.grid.values():
