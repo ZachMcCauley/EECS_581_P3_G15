@@ -99,6 +99,13 @@ class GameplayManager(GameManager):
         self.rem_moves = moves
         self.win_con = win_con
     def Render(self):
+        # Render Catland
+        catName = "catLand"
+        if self.rem_moves <= 0:
+            catName = "catLandEvil"
+        catSprite = self.resourceManager.GetCat(catName)
+        catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))
+        self.screen.blit(catSprite, (0, 0))
         pauseSprite = pygame.transform.scale_by(self.resourceManager.pauseButton, 2)
         self.screen.blit(pauseSprite, self.pauseRect)
         self.grid.Render(self.screen, self.gridSpace, self.timeSinceLastTick)
