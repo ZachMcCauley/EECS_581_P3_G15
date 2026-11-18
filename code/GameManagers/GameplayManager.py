@@ -72,9 +72,9 @@ class GameplayManager(GameManager):
                 else:
                     continue
             file.close()
-            for space in self.grid.AllPositions():
-                self.GenerateItemForTile(space, False)
-            self.ChangeTilesToAvoidMatches()
+        for space in self.grid.AllPositions():
+            self.GenerateItemForTile(space, False)
+        self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = self.HasWon()
         if won and self.grid.IsStable():
