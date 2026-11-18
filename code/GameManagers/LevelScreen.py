@@ -46,7 +46,7 @@ class LevelScreen(SelectionMenu):
         level = LEVELS[index]
         self.surrenderControl = True
         #copy the goal so playing a level doesn't change the level list
-        self.owner.AddGameManager(GameplayManager, level["moves"], dict(level["goal"]))
+        self.owner.AddGameManager(GameplayManager, level["moves"], dict(level["goal"]), index)
 
     def Render(self):
         screenDims = self.screen.get_size()

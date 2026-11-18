@@ -30,6 +30,7 @@ class GameplayManager(GameManager):
         # Also form our grid.
         self.grid = None
         self.FormFromLevelInfo(level_num)
+        self.combo = 0
     def FormFromLevelInfo(self, level_num=None):
         filename = "./Resources/Levels/level-" + str(level_num) + ".lvl"
         if level_num is None or not os.path.isfile(filename):
@@ -102,7 +103,9 @@ class GameplayManager(GameManager):
             self.draggedTile = None
         super().RunInternal()
         # And render our grid
-        TileActions.clearMatch(self.grid, self.win_con)
+        self.combo += TileActions.clearMatch(self.grid, self.win_con)
+        if self.grid.IsStable():
+            self.combo = 0
         self.CheckAllTilesItems()
         self.Render()
         return
@@ -133,7 +136,7 @@ class GameplayManager(GameManager):
             self.DoPause()
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.canSelectTile = True
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+        elif event.type == pygame.KEYDOWN and event.key in {pygame.K_p, pygame.K_b}:
             self.DoPause()
     def SetRequirements(self, moves, win_con):
         self.rem_moves = moves
@@ -141,13 +144,15 @@ class GameplayManager(GameManager):
     def Render(self):
         # Render Catland
         catName = "catLand"
-        if self.rem_moves <= 0:
+        if self.combo >= 2:
+            catName = "catLandBazinga"
+        elif self.rem_moves <= 0:
             catName = "catLandEvil"
         elif self.HasWon():
             catName = "catLandGood"
         catSprite = self.resourceManager.GetCat(catName)
         catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))
-        self.screen.blit(catSprite, (0, 0))
+        self.screen.blit(catSprite, (0, (self.screen.get_size()[1] - catSprite.get_height()) / 2))
         pauseSprite = pygame.transform.scale_by(self.resourceManager.pauseButton, 2)
         self.screen.blit(pauseSprite, self.pauseRect)
         self.grid.Render(self.screen, self.gridSpace, self.timeSinceLastTick)
