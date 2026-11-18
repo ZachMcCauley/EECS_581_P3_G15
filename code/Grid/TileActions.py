@@ -3,11 +3,18 @@
 """
 Created on Sun Nov  8 15:32:27 2026
 
-@author: eliza m 
-checked work and compatability with deepseek AI 
+authors: em, emilia davis, 
+checked work and compatability with deepseek AI and chatGPT 
 """
+'''
+Written by Emilia Davis
+Assisted by Claude Sonnet 5.5.
+Ideas provided by a human.
+All generated code understood and checked.
+'''
 
-#code by dani harris start 
+from Grid.Vector2Int import Vector2Int
+
 def SelectedTile():  #insertParams
     #fill in user input
     #return True if selected 
@@ -24,30 +31,55 @@ def callTileSwap(Tile1, Tile2): #check if swap is valid
 def TileSwap(Tile1, Tile2):
     Tile1.item, Tile2.item = Tile2.item, Tile1.item
     return True
-#code by dani harris end 
 
-#code by emilia davis start 
-'''
-Written by Emilia Davis
-Assisted by Claude Sonnet 5.5.
-Ideas provided by a human.
-All generated code understood and checked.
-'''
-
-from Grid.Vector2Int import Vector2Int
 
 d = (Vector2Int.Right(), Vector2Int.Up())
-
 def _findMatch(grid, minLen = 3):
     # hold currently found matches
     matches = []
+    usedPos=set() 
+    #check for powerup special matches first 
+    shapes=[("T", TSHAPE), ("L", LSHAPE)] 
+    '''generally: does to every position in grid, 
+    tries the shape at that position and its orientations and that they have the same matching item, 
+    then saves positions
+    '''
+    for pos in grid.AllPositions():
+        tile = grid.GetTileByPosition(pos)
+        if tile.item is None: continue #error check 
+       
+        # make sure not already part of match
+        if any(pos in match for match in matches):
+            continue
+        for shapeName, shape in shapes: #check special shapes T,L and their orientations 
+            orientations=getAllOrientations(shape) #get all possible types of the shape 
+            for orientation in orientations: #for each shape... 
+                if matchedShape(grid, pos, orientation): #...if its valid, check and append it 
+                    matchedPos=[] 
+                    for x,y in orientation: 
+                        checkPos=pos+Vector2Int(x,y) 
+                        matchedPos.append(checkPos) 
+                        
+                    repeat=False #cant use tile for two diff matches; this prevents it 
+                    for matchP in matchedPos: #if find that already accounted for then break current loop 
+                        if matchP in usedPos: 
+                            repeat=True 
+                            break 
+                    if repeat: continue 
+                    
+                    matches.append({"type": shapeName, "positions": matchedPos}) #new way of saving match 
+                    for matchP in matchedPos: 
+                        usedPos.add(matchP)
+                    
+                    
+    
     for direction in d: # scan all directions
         for pos in grid.AllPositions():
             tile = grid.GetTileByPosition(pos)
             if tile.item is None:
                 continue
             # make sure not already part of match
-            if any(pos in match for match in matches):
+            if any(pos in match["positions"] for match in matches): #matches is now dictionary so had to adjust 
                 continue
             currentMatch = [pos]
             nextPos = pos + direction # go next
@@ -58,17 +90,29 @@ def _findMatch(grid, minLen = 3):
                     nextPos += direction
                 else:
                     break
-            if len(currentMatch) >= minLen: # all that are above allowed len added
-                matches.append(currentMatch)
+                
+         
+            if len(currentMatch)>=minLen: #classify the line based on its length
+                if len(currentMatch)>=5:
+                    shapeName="LINE5"
+                elif len(currentMatch)==4:
+                    shapeName="LINE4"
+                else:
+                    shapeName="LINE3"
+                matches.append({"type": shapeName, "positions": currentMatch})
+                for matchP in currentMatch: 
+                    usedPos.add(matchP)
     return matches
 
+
 def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are matched from grid 
-    # Do not match tiles while grid is unstable
+    #do not match tiles while grid is unstable
     if not grid.IsStable():
         return 0
     matched = _findMatch(grid, minLen)
     for pattern in matched:
-        for pos in pattern:
+        matchType=pattern["type"] #use later when we decide types of powerups 
+        for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
             tile = grid.GetTileByPosition(pos)
             if tile.item is not None:
                 tile.item.OnClear(pos)
@@ -77,10 +121,13 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
                         if win_con[key] > 0:
                             win_con[key] -= 1
             tile.item = None
+            
+            #discussed: need to find tile that will hold the powerup tile instead of just clearing everything 
+            #prob use pattern similar to defining positions for T and L to specify a position that will have the result 
+            #like intersection of the lines for T and L 
+            
     return len(matched)
-#code by emilia Davis end 
 
-#code by eliza m start 
 #swap tiles at given positions, returns False if any error, True upon success
 #swap is done by changing the values of dctionary and then updating posiiton in GridTile to match its key 
 def SwapTiles(grid, pos1: Vector2Int, pos2: Vector2Int) -> bool: #similar to ContainsPosition, accessing position in grid 
@@ -98,4 +145,65 @@ def SwapTiles(grid, pos1: Vector2Int, pos2: Vector2Int) -> bool: #similar to Con
     else: 
         print("one of the tiles is not in grid")
         return False 
-#code by eliza m end 
+        
+#shapes in grid for T, L, and xxxx, xxxxx matches 
+#this is just tempate for shape, make into Vector2Int l8r and use algo for checking if shape exists from positions on grid 
+#use algebra/multipliers 
+TSHAPE= [(0, 0), (1, 0), (2, 0), (1, 1)]
+LSHAPE= [(0, 0), (0, 1), (0, 2), (1, 0)]
+LINE3= [(0, 0), (1, 0), (2, 0)]
+LINE4= [(0, 0), (1, 0), (2, 0),(3, 0)]
+LINE5= [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)]
+
+#want L and T shape to be recognized even when flipped REVISIT 
+def rotateShape(shape): #assisted w AI 
+    rotated=[]
+    for x, y in shape:
+        rotated.append((-y, x))
+    return rotated
+
+def flipShape(shape): #assisted w AI 
+    flipped=[]
+    for x, y in shape:
+        flipped.append((-x, y))
+    return flipped
+
+def fixShape(shape): #other functions make coords neg, so we need to make them pos again 
+    minX=min(x for x, y in shape)
+    minY=min(y for x, y in shape)
+    normalized=[]
+    for x, y in shape:
+        normalized.append((x-minX, y-minY))
+    return tuple(sorted(normalized))
+
+def getAllOrientations(shape): 
+    orientations=[]
+    current=shape
+
+    for i in range(4): #rotate 4 times 
+        normal=fixShape(current) #normal orientation 
+        if normal not in orientations: 
+            orientations.append(normal) #only append new stuff 
+        
+        flipped=fixShape(flipShape(current)) #reflected orientation
+        if flipped not in orientations: 
+            orientations.append(flipped)
+        current=rotateShape(current) #rotate before next iteration 
+    return orientations #all possible orientations 
+
+def matchedShape(grid, startPos, shape): #check that a given shape has all the same tiles otherwise its not a match 
+    firstTile=grid.GetTileByPosition(startPos) #get tile at the start of the shape; defined differently for each shape 
+    if firstTile.item is None: #error check 
+        return False
+    for x, y in shape: #check every tile in the shape 
+        checkPos=startPos+Vector2Int(x, y) #AI assist 
+        if not grid.ContainsPosition(checkPos): #check that position is in grid 
+            return False
+
+        checkTile=grid.GetTileByPosition(checkPos)
+        if checkTile.item is None: #emty tile 
+            return False
+
+        if checkTile.item!=firstTile.item: #check that tiles match 
+            return False
+    return True #if all checks pass then return true 
