@@ -77,11 +77,12 @@ class GameplayManager(GameManager):
         self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
         won = self.HasWon()
-        if won and self.grid.IsStable():
+        hasMatches = len(_findMatch(self.grid, 3)) > 0
+        if won and self.grid.IsStable() and not hasMatches:
             self.inGameLoop = False
             print("Game Won")
             return
-        if self.rem_moves <= 0 and self.grid.IsStable():
+        if self.rem_moves <= 0 and self.grid.IsStable() and not hasMatches:
             self.inGameLoop = False
             print("Game Lost")
             return
@@ -144,7 +145,9 @@ class GameplayManager(GameManager):
     def Render(self):
         # Render Catland
         catName = "catLand"
-        if self.combo >= 2:
+        if self.combo >= 4:
+            catName = "catLandBazingaWaow"
+        elif self.combo >= 2:
             catName = "catLandBazinga"
         elif self.rem_moves <= 0:
             catName = "catLandEvil"
