@@ -8,10 +8,6 @@ class ResourceManager:
         for filename in os.listdir(path):
             noAffix = filename.split('.')[0]
             self.resources[noAffix] = pygame.image.load(f"{path}/{filename}").convert_alpha()
-        self.powers = dict()
-        for filename in os.listdir(powerPath):
-            noAffix = filename.split('.')[0]
-            self.powers[noAffix] = pygame.image.load(f"{powerPath}/{filename}").convert_alpha()
         self.catLand = dict()
         for filename in os.listdir("./Resources/CatLand"):
             noAffix = filename.split('.')[0]

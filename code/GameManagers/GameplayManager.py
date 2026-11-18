@@ -12,35 +12,75 @@ from random import randint
 from GameManagers.PauseScreen import PauseScreen
 # Yes, I know this is bad practice. Do I care? No.
 from Grid.TileClear import _findMatch
+import os.path
+from re import fullmatch
 
 class GameplayManager(GameManager):
-    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
+    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}, level_num = 1):
         super().__init__(screen, fps)
         # Define our constants first
         # Percentage of the window that the grid occupies for rendering
         self.gridSpace = (0.6, 0.8)
-        self.validTileNames = self.resourceManager.AllItemNames()
+        self.validTileNames = []
         self.draggedTile = None
         self.canSelectTile = True
         self.rem_moves = moves
         self.win_con = win_con
         self.pauseRect = pygame.Rect(8, 8, 64, 64)
         # Also form our grid.
-        self.grid = Grid.FormFromDims((8, 8))
-        # Fill our grid with items
+        self.grid = None
+        self.FormFromLevelInfo(level_num)
+    def FormFromLevelInfo(self, level_num=None):
+        filename = "./Resources/Levels/level-" + str(level_num) + ".lvl"
+        if level_num is None or not os.path.isfile(filename):
+            # Also form our grid.
+            self.grid = Grid.FormFromDims((8, 8))
+            self.validTileNames = self.resourceManager.AllItemNames()
+        else:
+            file = open(filename, "r")
+            # Get positions in grid
+            positions = set()
+            startedPositions = False
+            for line in file:
+                line = line.strip("\n")
+                if startedPositions and not line.startswith("Vector2Int"):
+                    break
+                elif startedPositions:
+                    # We should check our string before running eval in case it somehow contains mallicious code.
+                    if not bool(fullmatch("Vector2Int\\(\\d+, *\\d+\\)", line)):
+                        raise RuntimeError("Level line " + line + " is not safe to evaluate, and may be tampered with!")
+                    positions.add(eval(line))
+                elif line.startswith("Positions:"):
+                    startedPositions = True
+                    continue
+                else:
+                    continue
+            self.grid = Grid(positions)
+            # Determine which items are in play.
+            startedItems = False
+            file.seek(0)
+            for line in file:
+                line = line.strip("\n")
+                if startedItems and line.endswith(":"):
+                    break
+                elif startedItems:
+                    self.validTileNames.append(line)
+                elif line.startswith("Items:"):
+                    startedItems = True
+                    continue
+                else:
+                    continue
+            file.close()
         for space in self.grid.AllPositions():
             self.GenerateItemForTile(space, False)
         self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
-        won = True
-        for value in self.win_con.values():
-            if value != 0:
-                won = False
-            if won:
-                self.inGameLoop = False
-                print("Game Won")
-                return
-        if self.rem_moves <= 0:
+        won = self.HasWon()
+        if won and self.grid.IsStable():
+            self.inGameLoop = False
+            print("Game Won")
+            return
+        if self.rem_moves <= 0 and self.grid.IsStable():
             self.inGameLoop = False
             print("Game Lost")
             return
@@ -103,6 +143,8 @@ class GameplayManager(GameManager):
         catName = "catLand"
         if self.rem_moves <= 0:
             catName = "catLandEvil"
+        elif self.HasWon():
+            catName = "catLandGood"
         catSprite = self.resourceManager.GetCat(catName)
         catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))
         self.screen.blit(catSprite, (0, 0))
@@ -129,3 +171,9 @@ class GameplayManager(GameManager):
             pos = firstMatch[0]
             self.GenerateItemForTile(pos, False)
             matches = _findMatch(self.grid)
+    def HasWon(self):
+        won = True
+        for value in self.win_con.values():
+            if value != 0:
+                won = False
+        return won
