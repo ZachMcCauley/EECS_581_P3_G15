@@ -14,6 +14,7 @@ from GameManagers.PauseScreen import PauseScreen
 from Grid.TileActions import _findMatch #we are using TileActions now instead of individual files
 import os
 from re import fullmatch
+import random
 
 class GameplayManager(GameManager):
     def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}, level_num = 1):
@@ -31,6 +32,9 @@ class GameplayManager(GameManager):
         self.grid = None
         self.FormFromLevelInfo(level_num)
         self.combo = 0
+        self.timeSinceLastMove = 0
+        self.blinkLambda = lambda : random.gauss(7000, 1000)
+        self.blinkTimer = self.blinkLambda()
     def FormFromLevelInfo(self, level_num=None):
         filename = "./Resources/Levels/level-" + str(level_num) + ".lvl"
         if level_num is None or not os.path.isfile(filename):
@@ -98,6 +102,7 @@ class GameplayManager(GameManager):
                     self.draggedTile = None
                     self.canSelectTile = False
                     self.rem_moves -= 1
+                    self.timeSinceLastMove = 0
             elif self.canSelectTile:
                 self.draggedTile = selectingTile
         else:
@@ -107,6 +112,10 @@ class GameplayManager(GameManager):
         self.combo += TileActions.clearMatch(self.grid, self.win_con)
         if self.grid.IsStable():
             self.combo = 0
+            self.timeSinceLastMove += self.timeSinceLastTick
+            self.blinkTimer -= self.timeSinceLastTick
+        if self.blinkTimer < -200:
+            self.blinkTimer = self.blinkLambda()
         self.CheckAllTilesItems()
         self.Render()
         return
@@ -153,6 +162,8 @@ class GameplayManager(GameManager):
             catName = "catLandEvil"
         elif self.HasWon():
             catName = "catLandGood"
+        elif self.blinkTimer < 0 and self.timeSinceLastMove > 10000:
+            catName = "catLandBlink"
         catSprite = self.resourceManager.GetCat(catName)
         catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))
         self.screen.blit(catSprite, (0, (self.screen.get_size()[1] - catSprite.get_height()) / 2))
