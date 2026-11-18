@@ -45,8 +45,8 @@ Vector2Int(6, 4)
 Vector2Int(6, 5)
 Vector2Int(6, 6)
 Items:
+piece_clock
 piece_chat
 piece_folder
 piece_save
-piece_mail
 piece_notepad
