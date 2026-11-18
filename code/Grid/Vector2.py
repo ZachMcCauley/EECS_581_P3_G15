@@ -42,6 +42,8 @@ class Vector2:
         return (self.x, self.y)
     def AsList(self) -> list:
         return [self.x, self.y]
+    def ManhattanDistance(self, other):
+        return abs(self.x - other.x) + abs(self.y - other.y)
     @staticmethod
     def Zero():
         return Vector2(0, 0)
