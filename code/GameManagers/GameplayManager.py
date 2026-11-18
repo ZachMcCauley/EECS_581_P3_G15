@@ -11,77 +11,36 @@ from Grid.Item import Item
 from random import randint
 from GameManagers.PauseScreen import PauseScreen
 # Yes, I know this is bad practice. Do I care? No.
-from Grid.TileClear import _findMatch
-import os.path
-from re import fullmatch
+from Grid.TileActions import _findMatch #we are using TileActions now instead of individual files 
 
 class GameplayManager(GameManager):
-    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}, level_num = 1):
+    def __init__(self, screen, fps = 60, moves = 10, win_con = {"piece_mail":4}):
         super().__init__(screen, fps)
         # Define our constants first
         # Percentage of the window that the grid occupies for rendering
         self.gridSpace = (0.6, 0.8)
-        self.validTileNames = []
+        self.validTileNames = self.resourceManager.AllItemNames()
         self.draggedTile = None
         self.canSelectTile = True
         self.rem_moves = moves
         self.win_con = win_con
         self.pauseRect = pygame.Rect(8, 8, 64, 64)
         # Also form our grid.
-        self.grid = None
-        self.FormFromLevelInfo(level_num)
-        self.combo = 0
-    def FormFromLevelInfo(self, level_num=None):
-        filename = "./Resources/Levels/level-" + str(level_num) + ".lvl"
-        if level_num is None or not os.path.isfile(filename):
-            # Also form our grid.
-            self.grid = Grid.FormFromDims((8, 8))
-            self.validTileNames = self.resourceManager.AllItemNames()
-        else:
-            file = open(filename, "r")
-            # Get positions in grid
-            positions = set()
-            startedPositions = False
-            for line in file:
-                line = line.strip("\n")
-                if startedPositions and not line.startswith("Vector2Int"):
-                    break
-                elif startedPositions:
-                    # We should check our string before running eval in case it somehow contains mallicious code.
-                    if not bool(fullmatch("Vector2Int\\(\\d+, *\\d+\\)", line)):
-                        raise RuntimeError("Level line " + line + " is not safe to evaluate, and may be tampered with!")
-                    positions.add(eval(line))
-                elif line.startswith("Positions:"):
-                    startedPositions = True
-                    continue
-                else:
-                    continue
-            self.grid = Grid(positions)
-            # Determine which items are in play.
-            startedItems = False
-            file.seek(0)
-            for line in file:
-                line = line.strip("\n")
-                if startedItems and line.endswith(":"):
-                    break
-                elif startedItems:
-                    self.validTileNames.append(line)
-                elif line.startswith("Items:"):
-                    startedItems = True
-                    continue
-                else:
-                    continue
-            file.close()
+        self.grid = Grid.FormFromDims((8, 8))
+        # Fill our grid with items
         for space in self.grid.AllPositions():
             self.GenerateItemForTile(space, False)
         self.ChangeTilesToAvoidMatches()
     def RunInternal(self): #return 0 if game is still running, 1 if game is won, 2 if game is lost
-        won = self.HasWon()
-        if won and self.grid.IsStable():
-            self.inGameLoop = False
-            print("Game Won")
-            return
-        if self.rem_moves <= 0 and self.grid.IsStable():
+        won = True
+        for value in self.win_con.values():
+            if value != 0:
+                won = False
+            if won:
+                self.inGameLoop = False
+                print("Game Won")
+                return
+        if self.rem_moves <= 0:
             self.inGameLoop = False
             print("Game Lost")
             return
@@ -103,9 +62,7 @@ class GameplayManager(GameManager):
             self.draggedTile = None
         super().RunInternal()
         # And render our grid
-        self.combo += TileActions.clearMatch(self.grid, self.win_con)
-        if self.grid.IsStable():
-            self.combo = 0
+        TileActions.clearMatch(self.grid, self.win_con)
         self.CheckAllTilesItems()
         self.Render()
         return
@@ -136,23 +93,12 @@ class GameplayManager(GameManager):
             self.DoPause()
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             self.canSelectTile = True
-        elif event.type == pygame.KEYDOWN and event.key in {pygame.K_p, pygame.K_b}:
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
             self.DoPause()
     def SetRequirements(self, moves, win_con):
         self.rem_moves = moves
         self.win_con = win_con
     def Render(self):
-        # Render Catland
-        catName = "catLand"
-        if self.combo >= 2:
-            catName = "catLandBazinga"
-        elif self.rem_moves <= 0:
-            catName = "catLandEvil"
-        elif self.HasWon():
-            catName = "catLandGood"
-        catSprite = self.resourceManager.GetCat(catName)
-        catSprite = pygame.transform.scale_by(catSprite, (self.screen.get_size()[0] / catSprite.get_width()))
-        self.screen.blit(catSprite, (0, (self.screen.get_size()[1] - catSprite.get_height()) / 2))
         pauseSprite = pygame.transform.scale_by(self.resourceManager.pauseButton, 2)
         self.screen.blit(pauseSprite, self.pauseRect)
         self.grid.Render(self.screen, self.gridSpace, self.timeSinceLastTick)
@@ -173,12 +119,6 @@ class GameplayManager(GameManager):
         matches = _findMatch(self.grid)
         while len(matches) > 0:
             firstMatch = matches[0]
-            pos = firstMatch[0]
+            pos = firstMatch["positions"][0]
             self.GenerateItemForTile(pos, False)
             matches = _findMatch(self.grid)
-    def HasWon(self):
-        won = True
-        for value in self.win_con.values():
-            if value != 0:
-                won = False
-        return won
