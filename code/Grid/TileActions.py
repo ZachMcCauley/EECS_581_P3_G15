@@ -14,6 +14,7 @@ All generated code understood and checked.
 '''
 
 from Grid.Vector2Int import Vector2Int
+from Grid.Item import Item, PowerUp
 
 def SelectedTile():  #insertParams
     #fill in user input
@@ -123,7 +124,7 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
         intersectionPos = pattern.get("intersection")  # Get the intersection position if it exists
         for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
             tile = grid.GetTileByPosition(pos)
-            if pos == intersectionPos:
+            if intersectionPos is not None and pos == intersectionPos:
                 continue
             if tile.item is not None:
                 tile.item.OnClear(pos)
@@ -133,11 +134,11 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
                             win_con[key] -= 1
             tile.item = None
         
-        if intersectionPos is not None:
+        if intersectionPos is not None and pos == intersectionPos:
             tile = grid.GetTileByPosition(intersectionPos)
 
             if tile.item is not None:
-                tile.item = Powerup(
+                tile.item = PowerUp(
                     base_item=tile.item,
                     powerup_type=matchType,
                 )
