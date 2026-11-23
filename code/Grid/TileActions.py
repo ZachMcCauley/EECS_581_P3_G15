@@ -14,6 +14,9 @@ All generated code understood and checked.
 '''
 
 from Grid.Vector2Int import Vector2Int
+from Grid.Item import Item, PowerUp
+from ResourceManager import ResourceManager
+import pygame
 
 def SelectedTile():  #insertParams
     #fill in user input
@@ -59,6 +62,14 @@ def _findMatch(grid, minLen = 3):
                     for x,y in orientation: 
                         checkPos=pos+Vector2Int(x,y) 
                         matchedPos.append(checkPos) 
+
+                        # Find the intersection within this specific orientation
+                    intersectionOffset = findIntersection(orientation)
+                    intersectionPos = (
+                        pos + Vector2Int(*intersectionOffset)
+                        if intersectionOffset is not None
+                        else None
+                    )
                         
                     repeat=False #cant use tile for two diff matches; this prevents it 
                     for matchP in matchedPos: #if find that already accounted for then break current loop 
@@ -67,7 +78,7 @@ def _findMatch(grid, minLen = 3):
                             break 
                     if repeat: continue 
                     
-                    matches.append({"type": shapeName, "positions": matchedPos}) #new way of saving match 
+                    matches.append({"type": shapeName, "positions": matchedPos, "intersection": intersectionPos}) #new way of saving match 
                     for matchP in matchedPos: 
                         usedPos.add(matchP)
                     
@@ -105,15 +116,21 @@ def _findMatch(grid, minLen = 3):
     return matches
 
 
-def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are matched from grid 
+def clearMatch(grid, win_con ,minLen = 3, powerupPos=None) -> int: #get rid of tiles that are matched from grid 
     #do not match tiles while grid is unstable
     if not grid.IsStable():
         return 0
     matched = _findMatch(grid, minLen)
     for pattern in matched:
         matchType=pattern["type"] #use later when we decide types of powerups 
+        intersectionPos = pattern.get("intersection")  # Get the intersection position if it exists
+        preservedPos = pattern.get("intersection")
+        if matchType in ("LINE4", "LINE5") and powerupPos in pattern["positions"]:
+            preservedPos = powerupPos
         for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
             tile = grid.GetTileByPosition(pos)
+            if intersectionPos is not None and pos == intersectionPos:
+                continue
             if tile.item is not None:
                 tile.item.OnClear(pos)
                 for key in win_con.keys():
@@ -121,7 +138,27 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
                         if win_con[key] > 0:
                             win_con[key] -= 1
             tile.item = None
-            
+        
+        if intersectionPos is not None:
+            tile = grid.GetTileByPosition(intersectionPos)
+
+            if tile.item is not None:
+                tile.item = PowerUp(
+                    base_item=tile.item,
+                    powerup_type=matchType,
+                    sprite = ResourceManager.Instance.GetItem("rainbow_powerup").convert_alpha()
+                )
+
+        if preservedPos is not None:
+            tile = grid.GetTileByPosition(preservedPos)
+
+            if tile.item is not None:
+                tile.item = PowerUp(
+                    base_item=tile.item,
+                    powerup_type=matchType,
+                    sprite=ResourceManager.Instance.GetItem("rainbow_powerup"),
+                )
+
             #discussed: need to find tile that will hold the powerup tile instead of just clearing everything 
             #prob use pattern similar to defining positions for T and L to specify a position that will have the result 
             #like intersection of the lines for T and L 
@@ -190,6 +227,19 @@ def getAllOrientations(shape):
             orientations.append(flipped)
         current=rotateShape(current) #rotate before next iteration 
     return orientations #all possible orientations 
+
+def findIntersection(shape):
+    #Gets the intersection of T and L matches.
+    for candidate in shape:
+        cx, cy = candidate
+        neighbor_count = sum(
+            (nx, ny) in shape
+            and abs(nx - cx) + abs(ny - cy) == 1
+            for nx, ny in shape
+        )
+        if neighbor_count >= 2:
+            return candidate
+    return None
 
 def matchedShape(grid, startPos, shape): #check that a given shape has all the same tiles otherwise its not a match 
     firstTile=grid.GetTileByPosition(startPos) #get tile at the start of the shape; defined differently for each shape 

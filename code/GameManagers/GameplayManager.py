@@ -96,7 +96,7 @@ class GameplayManager(GameManager):
                 t1 = self.grid.GetTileByPosition(self.draggedTile)
                 t2 = self.grid.GetTileByPosition(selectingTile)
                 TileActions.callTileSwap(t1, t2)
-                if TileActions.clearMatch(self.grid, self.win_con) == 0: #no matches were made
+                if TileActions.clearMatch(self.grid, self.win_con, powerupPos=selectingTile) == 0: #no matches were made
                     TileActions.callTileSwap(t1, t2) #revert to previous state
                 else:
                     self.draggedTile = None
