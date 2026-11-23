@@ -124,6 +124,7 @@ def clearMatch(grid, win_con ,minLen = 3, powerupPos=None) -> int: #get rid of t
     for pattern in matched:
         matchType=pattern["type"] #use later when we decide types of powerups 
         intersectionPos = pattern.get("intersection")  # Get the intersection position if it exists
+        preservedPos = pattern.get("intersection")
         if matchType in ("LINE4", "LINE5") and powerupPos in pattern["positions"]:
             preservedPos = powerupPos
         for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
