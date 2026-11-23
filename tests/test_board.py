@@ -103,7 +103,7 @@ def test_l_shape(grid):
 #a game with its board filled up (one pass per row in the worst case)
 @pytest.fixture
 def gm():
-    from GameplayManager import GameplayManager
+    from GameManagers.GameplayManager import GameplayManager
     gm = GameplayManager(pygame.display.get_surface())
     for _ in range(8):
         gm.CheckAllTilesItems()
