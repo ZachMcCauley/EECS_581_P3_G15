@@ -124,7 +124,7 @@ def clearMatch(grid, win_con ,minLen = 3, powerupPos=None) -> int: #get rid of t
     for pattern in matched:
         matchType=pattern["type"] #use later when we decide types of powerups 
         intersectionPos = pattern.get("intersection")  # Get the intersection position if it exists
-        if matchType in ("LINE4", "LINE5") and powerupPos is in pattern["positions"]:
+        if matchType in ("LINE4", "LINE5") and powerupPos in pattern["positions"]:
             preservedPos = powerupPos
         for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
             tile = grid.GetTileByPosition(pos)
@@ -157,7 +157,7 @@ def clearMatch(grid, win_con ,minLen = 3, powerupPos=None) -> int: #get rid of t
                     powerup_type=matchType,
                     sprite=ResourceManager.Instance.GetItem("rainbow_powerup"),
                 )
-                
+
             #discussed: need to find tile that will hold the powerup tile instead of just clearing everything 
             #prob use pattern similar to defining positions for T and L to specify a position that will have the result 
             #like intersection of the lines for T and L 
