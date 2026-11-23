@@ -15,6 +15,8 @@ All generated code understood and checked.
 
 from Grid.Vector2Int import Vector2Int
 from Grid.Item import Item, PowerUp
+from ResourceManager import ResourceManager
+import pygame
 
 def SelectedTile():  #insertParams
     #fill in user input
@@ -114,7 +116,7 @@ def _findMatch(grid, minLen = 3):
     return matches
 
 
-def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are matched from grid 
+def clearMatch(grid, win_con ,minLen = 3, powerupPos=None) -> int: #get rid of tiles that are matched from grid 
     #do not match tiles while grid is unstable
     if not grid.IsStable():
         return 0
@@ -122,6 +124,8 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
     for pattern in matched:
         matchType=pattern["type"] #use later when we decide types of powerups 
         intersectionPos = pattern.get("intersection")  # Get the intersection position if it exists
+        if matchType in ("LINE4", "LINE5") and powerupPos is in pattern["positions"]:
+            preservedPos = powerupPos
         for pos in pattern["positions"]: #now _findMatch() returns a dictionary with types of powerups/regular matches 
             tile = grid.GetTileByPosition(pos)
             if intersectionPos is not None and pos == intersectionPos:
@@ -134,15 +138,26 @@ def clearMatch(grid, win_con ,minLen = 3) -> int: #get rid of tiles that are mat
                             win_con[key] -= 1
             tile.item = None
         
-        if intersectionPos is not None and pos == intersectionPos:
+        if intersectionPos is not None:
             tile = grid.GetTileByPosition(intersectionPos)
 
             if tile.item is not None:
                 tile.item = PowerUp(
                     base_item=tile.item,
                     powerup_type=matchType,
+                    sprite = ResourceManager.Instance.GetItem("rainbow_powerup").convert_alpha()
                 )
-            
+
+        if preservedPos is not None:
+            tile = grid.GetTileByPosition(preservedPos)
+
+            if tile.item is not None:
+                tile.item = PowerUp(
+                    base_item=tile.item,
+                    powerup_type=matchType,
+                    sprite=ResourceManager.Instance.GetItem("rainbow_powerup"),
+                )
+                
             #discussed: need to find tile that will hold the powerup tile instead of just clearing everything 
             #prob use pattern similar to defining positions for T and L to specify a position that will have the result 
             #like intersection of the lines for T and L 
