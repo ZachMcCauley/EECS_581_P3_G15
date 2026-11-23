@@ -1,0 +1,16 @@
+Sprint 3 Artifacts (Nov 22)
+
+Pause Screen (3 story points)
+Add a pause menu, or a similar menu to that effect.
+
+Level Design (3 story points)
+Determining concepts, play experience, and high-level parts of video games.
+
+Saving Overall Game Completion (3 story points)
+Save which levels are completed
+
+Score Tracking (3 story points)
+Determine score for matches, and keep a running score total (during the level)
+
+Saving High Scores (3 story points)
+Keep a high score for each level (outside of the levels)

@@ -1,0 +1,22 @@
+Sprit 2 artifacts (Nov 15)
+
+Detecting Special Matches (3 story points)
+Detection of matches that would generate a power-up.
+
+Powerup Creation (3 story points)
+Put the actual powerup item on the board.
+
+Powerups (5 story points)
+Create the actual effects of each powerup and handle the logic.
+
+Detecting Win/Loss-Conditions (5 story points)
+Detecting when the level should end under normal circumstances (a win) or when a player has failed by running out of time/moves.
+
+UI Art Assets (3 story points)
+Creation of art for UI.
+
+Main Menu (3 story points)
+Creation of menu that is shown when you open the game.
+
+Pause Screen (3 story points)
+Add a pause menu.
