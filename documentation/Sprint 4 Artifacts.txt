@@ -1,0 +1,18 @@
+Sprint 4 Artifacts
+
+Saving Game State (8 story points)
+
+When the game leaves the main gameplay loop, a representation of the game state (level number, representation of items at each grid space, score, win/loss condition progress, etc.)
+such that if the game is reloaded, the user can continue the game where they left off.
+
+Win-Cons (Special) (8 story points)
+
+This is for the implementation of any special, level-specific, win-conditions defined in sprint 3's level design task. All implementations must be in the spirit of what was defined in sprint 3.
+
+Loss-Cons (Special) (8 story points)
+
+This is for the implementation of any special, level-specific, loss-conditions defined in sprint 3's level design task. All implementations must be in the spirit of what was defined in sprint 3.
+
+Settings (2 story points)
+
+Create a settings menu (accessible from the main menu and pause menu) and create settings for the user's convenience. For example, there may be a slider to adjust the speed of the tile fall animation.
