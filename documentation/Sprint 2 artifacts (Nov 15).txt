@@ -15,8 +15,12 @@ Detecting when the level should end under normal circumstances (a win) or when a
 UI Art Assets (3 story points)
 Creation of art for UI.
 
+Level Screen (3 story points)
+Creation of a level screen. When a level is selected, the appropriate level should be loaded.
+
 Main Menu (3 story points)
-Creation of menu that is shown when you open the game.
+Creation of menu that is shown when you open the game. There should be options to quit and to play the game. Selecting the former should end the program, and the latter should proceed to the level
+selection screen.
 
 Pause Screen (3 story points)
-Add a pause menu.
+Add a pause menu. Options to quit and resume the game should be present.

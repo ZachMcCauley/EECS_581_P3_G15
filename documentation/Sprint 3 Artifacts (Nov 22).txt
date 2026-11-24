@@ -1,16 +1,14 @@
 Sprint 3 Artifacts (Nov 22)
 
-Pause Screen (3 story points)
-Add a pause menu, or a similar menu to that effect.
-
 Level Design (3 story points)
-Determining concepts, play experience, and high-level parts of video games.
+Twenty unique levels should be created. Each level should contain the following information: which tiles are present, the shape of the grid, the objective(s), and any special win-conditions/lose-conditions
+should be defined (though implementation is not yet necessary) in preparation for sprint 4.
 
 Saving Overall Game Completion (3 story points)
-Save which levels are completed
+Save which levels are completed, and restrict the user's selection on the level select screen such that users can only select levels up to and including the first uncompleted level.
 
 Score Tracking (3 story points)
-Determine score for matches, and keep a running score total (during the level)
+Determine score for matches, and keep a running score total (during the level).
 
 Saving High Scores (3 story points)
-Keep a high score for each level (outside of the levels)
+Keep a high score for each level (outside of the levels).

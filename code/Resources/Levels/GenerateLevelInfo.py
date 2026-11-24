@@ -1,24 +1,23 @@
 from Grid.Vector2Int import Vector2Int
+import os
 
 # This file is used to generate information about levels. It should not be imported by any other file
 
 def IndicateGridTiles(file):
     file.write("Positions:\n")
-    for x in range(0, 7):
-        for y in range(0, 7):
+    for x in range(0, 11):
+        for y in range(0, 11):
             pos = Vector2Int(x, y)
-            if pos.x == 3 and pos.y <= 3:
+            if pos.ManhattanDistance(Vector2Int(5, 5)) > 5:
                 continue
             reprStr = repr(pos) + "\n"
             file.write(reprStr)
 
 def IndicateItems(file):
     itemNames = []
-    itemNames.append("piece_chat")
-    itemNames.append("piece_folder")
-    itemNames.append("piece_save")
-    itemNames.append("piece_mail")
-    itemNames.append("piece_notepad")
+    for filename in os.listdir("./Resources/Items/"):
+        preDot = filename.split(".")[0]
+        itemNames.append(preDot)
     values = "Items:\n" + "\n".join(itemNames)
     file.write(values)
 
